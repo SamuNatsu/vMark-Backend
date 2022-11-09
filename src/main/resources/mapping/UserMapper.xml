@@ -19,6 +19,11 @@
         FROM v_users
         WHERE uid = #{uid}
     </select>
+    <select id="findByAccount" parameterType="java.lang.String" resultType="com.vmark.backend.entity.User">
+        SELECT *
+        FROM v_users
+        WHERE account = #{account}
+    </select>
     <select id="findAll" resultType="com.vmark.backend.entity.User">
         SELECT *
         FROM v_users

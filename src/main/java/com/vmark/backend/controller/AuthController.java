@@ -2,18 +2,17 @@ package com.vmark.backend.controller;
 
 import com.vmark.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    // Services
+    // ===== Services =====
     @Autowired
     private AuthService authService;
 
@@ -24,6 +23,10 @@ public class AuthController {
     // Password validator (8 <= length <= 20, must contain alpha, digit and special character)
     private final static Pattern passwordRegex =
             Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[._~!@#$^&*])[A-Za-z0-9._~!@#$^&*]{8,20}$");
+
+    // ===== Http Servelet Request =====
+    @Autowired
+    private HttpServletRequest httpServeletRequest;
 
     // ===== Mappings =====
     // Login
@@ -36,12 +39,29 @@ public class AuthController {
         if (!accountMatcher.matches())
             return "{\"status\":\"failed\",\"message\":\"login.message.invalid_account\"}";
         if (!passwordMatcher.matches())
-            return "{\"status\":\"failed\",\"message\":\"login.message.invalid_account\"}";
+            return "{\"status\":\"failed\",\"message\":\"login.message.invalid_password\"}";
 
         // Call service
-        return authService.login(account, password);
+        HttpSession session = httpServeletRequest.getSession();
+        session.setMaxInactiveInterval(86400);
+        return authService.login(account, password, session);
     }
 
     // Logout
+    @GetMapping("logout")
+    public String logout() {
+        // Call service
+        HttpSession session = httpServeletRequest.getSession();
+        session.setMaxInactiveInterval(86400);
+        return authService.logout(session);
+    }
 
+    // Info
+    @GetMapping("info")
+    public String info() {
+        // Call service
+        HttpSession session = httpServeletRequest.getSession();
+        session.setMaxInactiveInterval(86400);
+        return authService.info(session);
+    }
 }
