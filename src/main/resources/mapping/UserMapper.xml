@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.vmark.backend.dao.UserDAO">
-    <insert id="add" parameterType="com.vmark.backend.dao.UserInfo">
+<mapper namespace="com.vmark.backend.mapper.UserMapper">
+    <insert id="add" parameterType="com.vmark.backend.entity.User">
         INSERT INTO v_users(account, username, password)
         VALUES(#{account}, #{name}, #{password})
     </insert>
-    <update id="update" parameterType="com.vmark.backend.dao.UserInfo">
+    <update id="update" parameterType="com.vmark.backend.entity.User">
         UPDATE v_users
         SET account = #{account}, username = #{username}, password = #{password}
         WHERE uid = #{uid}
@@ -14,12 +14,12 @@
         DELETE FROM v_users
         WHERE uid = #{uid}
     </delete>
-    <select id="findById" parameterType="long" resultType="com.vmark.backend.dao.UserInfo">
+    <select id="findById" parameterType="long" resultType="com.vmark.backend.entity.User">
         SELECT *
         FROM v_users
         WHERE uid = #{uid}
     </select>
-    <select id="findAll" resultType="com.vmark.backend.dao.UserInfo">
+    <select id="findAll" resultType="com.vmark.backend.entity.User">
         SELECT *
         FROM v_users
     </select>
