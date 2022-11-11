@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonMsg {
     // Object mapper
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    
+
     // Fail message
     public static String failed(String msg) {
         return String.format("{\"status\":\"failed\",\"message\":\"%s\"}", msg);
