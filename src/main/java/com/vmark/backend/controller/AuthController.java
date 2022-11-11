@@ -20,9 +20,9 @@ public class AuthController {
     // Account validator (6 <= length <= 20, composed of alphas, digits and underlines)
     private final static Pattern accountRegex =
             Pattern.compile("^[0-9a-zA-Z_]{6,20}$");
-    // Password validator (8 <= length <= 20, must contain alpha, digit and special character)
+    // Password validator (SHA 256 string)
     private final static Pattern passwordRegex =
-            Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[._~!@#$^&*])[A-Za-z0-9._~!@#$^&*]{8,20}$");
+            Pattern.compile("^[0-9a-z]{64}$");
 
     // ===== Http Servelet Request =====
     @Autowired

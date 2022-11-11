@@ -8,9 +8,12 @@ import java.util.List;
 @Repository
 public interface UserMapper {
     int add(User user);
+
     int update(User user);
-    int deleteById(long uid);
-    User findById(long uid);
+
+    int deleteById(int uid);
+
+    User findById(int uid);
     User findByAccount(String account);
     List<User> findAll();
 }

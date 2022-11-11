@@ -2,30 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.vmark.backend.mapper.UserMapper">
     <insert id="add" parameterType="com.vmark.backend.entity.User">
-        INSERT INTO v_users(account, username, password)
-        VALUES(#{account}, #{name}, #{password})
+        INSERT INTO users(`account`, `password`) VALUES(#{account}, #{password})
     </insert>
+
     <update id="update" parameterType="com.vmark.backend.entity.User">
-        UPDATE v_users
-        SET account = #{account}, username = #{username}, password = #{password}
+        UPDATE users
+        SET `name` = #{name}, `password` = #{password}, privilege = #{privilege}
         WHERE uid = #{uid}
     </update>
-    <delete id="deleteById" parameterType="long">
-        DELETE FROM v_users
-        WHERE uid = #{uid}
+
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM users WHERE uid = #{uid}
     </delete>
-    <select id="findById" parameterType="long" resultType="com.vmark.backend.entity.User">
-        SELECT *
-        FROM v_users
-        WHERE uid = #{uid}
+
+    <select id="findById" parameterType="int" resultType="com.vmark.backend.entity.User">
+        SELECT * FROM users WHERE uid = #{uid}
     </select>
     <select id="findByAccount" parameterType="java.lang.String" resultType="com.vmark.backend.entity.User">
-        SELECT *
-        FROM v_users
-        WHERE account = #{account}
+        SELECT * FROM users WHERE `account` = #{account}
     </select>
     <select id="findAll" resultType="com.vmark.backend.entity.User">
-        SELECT *
-        FROM v_users
+        SELECT * FROM users
     </select>
 </mapper>
