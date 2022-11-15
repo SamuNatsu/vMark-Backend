@@ -20,6 +20,6 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @JsonIgnore
+    @JsonProperty("privilege")
     private short privilege;
 }

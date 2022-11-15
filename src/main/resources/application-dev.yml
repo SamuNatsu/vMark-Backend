@@ -1,7 +1,16 @@
 server:
   port: 8080
+  servlet:
+    session:
+      timeout: 1d
+      cookie:
+        same-site: none
+        secure: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 15MB
   datasource:
     username: root
     password: asdfQWER1234####

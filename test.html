@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
+</head>
+<body>
+    <img id="captcha" src="http://localhost:8080/api/auth/captcha" alt="Captcha"/>
+    <div>
+        <h1>Register</h1>
+        <form action="http://localhost:8080/api/auth/register" method="post" onsubmit="reg()">
+            <label>
+                Account:
+                <input name="account" type="text"/>
+            </label><br/>
+            <label>
+                Password:
+                <input id="reg_b" name="password" type="password"/>
+            </label><br/>
+            <label>
+                Captcha:
+                <input name="captcha" type="text"/>
+            </label>
+            <button type="submit">Submit</button>
+        </form>
+        <script>
+            function reg() {
+                let b = document.querySelector("#reg_b");
+                let t = b.value;
+                t = CryptoJS.SHA256(t).toString();
+                b.value = t;
+            }
+        </script>
+    </div>
+    <hr/>
+    <div>
+        <h1>Login</h1>
+        <form action="http://localhost:8080/api/auth/login" method="post" onsubmit="reg1()">
+            <label>
+                Account:
+                <input name="account" type="text"/>
+            </label><br/>
+            <label>
+                Password:
+                <input id="reg_a" name="password" type="password"/>
+            </label><br/>
+            <label>
+                Captcha:
+                <input name="captcha" type="text"/>
+            </label>
+            <button type="submit">Submit</button>
+        </form>
+        <script>
+            function reg1() {
+                let b = document.querySelector("#reg_a");
+                let t = b.value;
+                t = CryptoJS.SHA256(t).toString();
+                b.value = t;
+            }
+        </script>
+    </div>
+</body>
+</html>

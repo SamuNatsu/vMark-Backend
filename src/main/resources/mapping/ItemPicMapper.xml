@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vmark.backend.mapper.ItemPicMapper">
+    <!-- Result maps -->
+    <resultMap id="itemPicMap" type="com.vmark.backend.entity.ItemPic">
+        <result property="ipid" column="ipid"/>
+        <result property="iid" column="iid"/>
+        <result property="data" column="data" jdbcType="BLOB" typeHandler="org.apache.ibatis.type.BlobTypeHandler"/>
+    </resultMap>
+
+    <!-- Inserts -->
+    <insert id="add" parameterType="com.vmark.backend.entity.ItemPic">
+        INSERT INTO item_pics(iid, `data`)
+        VALUES(#{iid}, #{data,typeHandler=org.apache.ibatis.type.BlobTypeHandler})
+    </insert>
+
+    <!-- Deletes -->
+    <delete id="deleteByIpid" parameterType="int">
+        DELETE FROM item_pics
+        WHERE ipid = #{ipid}
+    </delete>
+    <delete id="deleteByIid" parameterType="int">
+        DELETE FROM item_pics
+        WHERE iid = #{iid}
+    </delete>
+
+    <!-- Selects -->
+    <select id="findByIpid" parameterType="int" resultMap="itemPicMap">
+        SELECT *
+        FROM item_pics
+        WHERE ipid = #{ipid}
+    </select>
+    <select id="findByIid" parameterType="int" resultMap="itemPicMap">
+        SELECT *
+        FROM item_pics
+        WHERE iid = #{iid}
+    </select>
+</mapper>

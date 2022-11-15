@@ -7,13 +7,16 @@ import java.util.List;
 
 @Repository
 public interface UserMapper {
-    int add(User user);
+    int add(String account, String password, short privilege);
 
-    int update(User user);
+    int updateName(int uid, String name);
+    int updatePassword(int uid, String password);
+    int updatePriviledge(int uid, short privilege);
 
     int deleteById(int uid);
 
     User findById(int uid);
     User findByAccount(String account);
+    List<User> findLimit(int offset, int rows);
     List<User> findAll();
 }
