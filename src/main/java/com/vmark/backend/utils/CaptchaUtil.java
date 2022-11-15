@@ -32,7 +32,7 @@ public class CaptchaUtil {
     // Check status
     public enum CheckStatus {
         PASS,
-        REJECT,
+        WRONG,
         TIMEOUT
     }
 
@@ -45,6 +45,6 @@ public class CaptchaUtil {
 
         // Check match
         return captcha.compareTo((String)session.getAttribute("captcha")) == 0 ?
-                CheckStatus.PASS : CheckStatus.REJECT;
+                CheckStatus.PASS : CheckStatus.WRONG;
     }
 }

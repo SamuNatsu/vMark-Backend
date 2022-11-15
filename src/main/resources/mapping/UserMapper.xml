@@ -9,15 +9,17 @@
     ]]></insert>
 
     <!-- Update -->
-    <update id="updateName"><![CDATA[
+    <update id="updateInfo">
         UPDATE users
-        SET `name` = #{name}
-        WHERE uid = #{uid}
-    ]]></update>
-    <update id="updatePassword"><![CDATA[
-        UPDATE users
-        SET `password` = #{password}
-        WHERE uid = #{uid}
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="password != null">
+                `password` = #{password},
+            </if>
+        </set><![CDATA[
+        WHERE uid = #{uid} AND (uid = #{opUid} OR privilege < #{opPrivilege})
     ]]></update>
     <update id="updatePrivilege"><![CDATA[
         UPDATE users
@@ -46,9 +48,5 @@
         SELECT *
         FROM users
         LIMIT #{offset}, #{rows}
-    ]]></select>
-    <select id="findAll" resultType="com.vmark.backend.entity.User"><![CDATA[
-        SELECT *
-        FROM users
     ]]></select>
 </mapper>

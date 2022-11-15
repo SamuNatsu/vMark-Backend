@@ -55,25 +55,18 @@ public class AuthService {
             return JsonMsg.success();
         }
 
+        // Account duplicated
         logger.warn("Dumplicated register: account='{}'", account);
         return JsonMsg.failed("message.auth.register.account_duplicated");
     }
 
     // Login
     public String login(String account, String password, HttpSession session) {
-        // ===== Check session =====
-        // If login
-        if (session.getAttribute("login") != null &&
-                (boolean)session.getAttribute("login")) {
-            long timestamp = (long)session.getAttribute("timestamp");
-
-            // Check timeout (1 day)
-            if (new Date().getTime() - timestamp > 86400L)
-                session.setAttribute("login", false);
-            else {
-                logger.warn("Already logined: account='{}'", account);
-                return JsonMsg.failed("message.auth.login.already");
-            }
+        // Check login
+        LoginStatus status = checkLogin(session);
+        if (status == LoginStatus.PASS) {
+            logger.warn("Already logined: account='{}'", account);
+            return JsonMsg.failed("message.auth.login.already");
         }
 
         // Find user
@@ -93,7 +86,7 @@ public class AuthService {
         logger.info("Successfully logined: account='{}'", account);
         // Update session
         session.setAttribute("login", true);
-        session.setAttribute("timestamp", new Date().getTime());
+        session.setAttribute("login_timestamp", new Date().getTime());
         session.setAttribute("user", user);
         // Return user info
         return JsonMsg.success(user);
@@ -108,22 +101,39 @@ public class AuthService {
 
     // Get logined user info
     public String info(HttpSession session) {
-        // If no login
-        if (session.getAttribute("login") == null ||
-                !(boolean)session.getAttribute("login")) {
+        // Check login
+        LoginStatus status = checkLogin(session);
+        if (status != LoginStatus.PASS) {
             logger.warn("Fail to get session info on session '{}'", session.getId());
-            return JsonMsg.failed("message.auth.info.pls_login");
-        }
-
-        // If timeout
-        if (new Date().getTime() - (long)session.getAttribute("timestamp") > 86400000L) {
-            logger.warn("Fail to get session info on session '{}'", session.getId());
-            session.setAttribute("login", false);
             return JsonMsg.failed("message.auth.info.pls_login");
         }
 
         // Return user info
         logger.info("Successfully get session info on session '{}'", session.getId());
         return JsonMsg.success(session.getAttribute("user"));
+    }
+
+    // Login status
+    public enum LoginStatus {
+        PASS,
+        REJECT,
+        TIMEOUT
+    }
+
+    // Check login
+    public LoginStatus checkLogin(HttpSession session) {
+        Boolean login = (Boolean)session.getAttribute("login");
+        Long timestamp = (Long)session.getAttribute("login_timestamp");
+
+        // No login
+        if (login == null || !login)
+            return LoginStatus.REJECT;
+
+        // Timeout
+        if (new Date().getTime() - timestamp > 86400000L)
+            return LoginStatus.TIMEOUT;
+
+        // Pass
+        return LoginStatus.PASS;
     }
 }

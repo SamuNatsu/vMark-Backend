@@ -34,10 +34,17 @@ CREATE TABLE users(
 # Add super admin account, password is "super_admin", encrypted as SHA256
 INSERT INTO users(`account`, `password`, privilege)
 VALUES (
-    'super_admin',
-    '35b1e72c51ac17b1cfc8d79e2b24fd22bd5797e4c8461e7e8561818eec28715d',
-    2
-);
+           'super_admin',
+           '35b1e72c51ac17b1cfc8d79e2b24fd22bd5797e4c8461e7e8561818eec28715d',
+           2
+       );
+
+# Add test account, password is "test", encrypted as SHA256
+INSERT INTO users(`account`, `password`)
+VALUES (
+           'test',
+           '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
+       );
 
 # ===== Item table =====
 # Create item table

@@ -29,7 +29,7 @@ public class AuthController {
     private static final Pattern passwordRegex = Pattern.compile("^[0-9a-z]{64}$");
 
     // Captcha validator (length = 4, composed of alphas and digits)
-    private static final Pattern captchaRegex = Pattern.compile("^[0-9a-zA-Z]{4}$");
+    private static final Pattern captchaRegex = Pattern.compile("^[0-9A-Z]{4}$");
     // ===== End of Validators =====
 
 
@@ -71,7 +71,7 @@ public class AuthController {
                 // Call service
                 return authService.register(account, password);
             }
-            case REJECT -> {
+            case WRONG -> {
                 // Reject
                 return JsonMsg.failed("message.auth.register.wrong_captcha");
             }
