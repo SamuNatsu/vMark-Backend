@@ -15,11 +15,17 @@
             <if test="true">
                 `name` = #{name},
             </if>
-            <if test="aid != null">
-                picture = #{aid},
+            <if test="true">
+                cid = #{cid},
             </if>
             <if test="true">
-                price = #{price},
+                price = #{price}
+            </if>
+            <if test="true">
+                remain = #{remain},
+            </if>
+            <if test="aid != null">
+                picture = #{aid},
             </if>
             <if test="sale != null">
                 sale = #{sale},
@@ -27,15 +33,12 @@
             <if test="description != null">
                 `description` = #{description},
             </if>
-            <if test="true">
-                remain = #{remain},
-            </if>
         </set>
         WHERE iid = #{iid}
     </update>
 
     <!-- Deletes -->
-    <delete id="deleteById">
+    <delete id="delete">
         DELETE FROM items
         WHERE iid = #{iid}
     </delete>
@@ -46,20 +49,7 @@
         FROM items
         WHERE items.iid = #{iid}
     </select>
-
     <select id="searchAll" resultType="com.vmark.backend.entity.Item">
-        SELECt items.iid, `name`, `path` AS picture, price, sale, `description`, remain
-        FROM items LEFT JOIN attachments ON items.picture = attachments.aid
-        <if test="keyword != null">
-        WHERE `name` LIKE CONCAT('%', #{keyword}, '%')
-        </if>
-        <choose>
-            <when test="offset != null">
-        LIMIT #{offset}, 20
-            </when>
-            <otherwise>
-        LIMIT 20
-            </otherwise>
-        </choose>
+
     </select>
 </mapper>

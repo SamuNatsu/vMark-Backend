@@ -35,27 +35,5 @@ public class ItemService {
         return JsonMsg.success(item);
     }
 
-    // Find item by keyword
-    public String findByKeyword(String keyword, int offset, int rows) {
 
-        // ===== Find in database =====
-        List<Item> item = itemMapper.findByKeyword(keyword, offset, rows);
-        if (item == null)
-            return JsonMsg.failed("message.not_found.item.keyword");
-
-        // ===== Return =====
-        logger.info("Search: keyword='{}', offset={}, rows={}", keyword, offset, rows);
-        return JsonMsg.success(item);
-    }
-
-    // Find item limit
-    public String findLimit(int offset, int rows) {
-        // ===== Find in database =====
-        List<Item> item = itemMapper.findLimit(offset, rows);
-        if (item == null)
-            return JsonMsg.failed("message.not_found.item.limit");
-
-        // ===== Return =====
-        return JsonMsg.success(item);
-    }
 }

@@ -10,13 +10,17 @@ import java.util.List;
 public interface ItemMapper {
     int add(String name, int cid, int price);
 
-    int update(String name, Integer aid, float price, Float sale, String description, int remain);
+    int update(int iid,
+               String name,
+               int cid,
+               int price,
+               int remain,
+               Integer aid,
+               Integer sale,
+               String description);
 
-    int deleteById(int iid);
+    int delete(int iid);
 
     Item findById(int iid);
-    List<Item> findByKeyword(String keyword, int offset, int rows);
-    List<Item> findLimit(int offset, int rows);
-
     List<Item> searchAll(HashMap<String, Object> options);
 }
