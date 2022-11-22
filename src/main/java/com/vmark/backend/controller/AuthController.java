@@ -1,7 +1,6 @@
 package com.vmark.backend.controller;
 
 import com.vmark.backend.service.AuthService;
-import com.vmark.backend.utils.CaptchaUtil;
 import com.vmark.backend.utils.JsonMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,10 +14,9 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    // ===== Services =====
-    @Autowired
-    private AuthService authService;
-    // ===== End of Services =====
+    // ===== External Autowired =====
+    private final AuthService authService;
+    // ===== End of External Autowired =====
 
 
     // ===== Validators =====
@@ -33,88 +31,58 @@ public class AuthController {
     // ===== End of Validators =====
 
 
-    // ===== Http Servlet =====
+    // ===== Constructor =====
     @Autowired
-    private HttpServletRequest httpServletRequest;
-    @Autowired
-    private HttpServletResponse httpServletResponse;
-    // ===== End of Http Servlet =====
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+    // ===== End of Constructor =====
 
 
     // ===== Mappings =====
     // Captcha
     @GetMapping(value = "/captcha", produces = MediaType.IMAGE_GIF_VALUE)
-    public byte[] captcha() {
-        // Call service
-        return authService.genCaptcha(httpServletRequest.getSession(), httpServletResponse);
-    }
-
-    // Register
-    @PostMapping("/register")
-    public String register(@RequestParam("account") String account,
-                           @RequestParam("password") String password,
-                           @RequestParam("captcha") String captcha) {
-        // Validate params
-        Matcher accountMatcher = accountRegex.matcher(account);
-        Matcher passwordMatcher = passwordRegex.matcher(password);
-        Matcher captchaMatcher = captchaRegex.matcher(captcha);
-        if (!accountMatcher.matches())
-            return JsonMsg.failed("message.auth.register.invalid_account");
-        if (!passwordMatcher.matches())
-            return JsonMsg.failed("message.auth.register.invalid_password");
-        if (!captchaMatcher.matches())
-            return JsonMsg.failed("message.auth.register.invalid_captcha");
-
-        // Check captcha
-        switch (CaptchaUtil.check(captcha, httpServletRequest.getSession())) {
-            case PASS -> {
-                // Call service
-                return authService.register(account, password);
-            }
-            case WRONG -> {
-                // Reject
-                return JsonMsg.failed("message.auth.register.wrong_captcha");
-            }
-            case TIMEOUT -> {
-                // Timeout
-                return JsonMsg.failed("message.auth.register.captcha_timeout");
-            }
-        }
-        return null;
+    public byte[] captcha(HttpServletRequest request,
+                          HttpServletResponse response) {
+        // ===== Call service =====
+        return authService.genCaptcha(request.getSession(), response);
     }
 
     // Login
     @PostMapping("/login")
     public String login(@RequestParam("account") String account,
                         @RequestParam("password") String password,
-                        @RequestParam("captcha") String captcha) {
-        // Validate params
+                        @RequestParam("captcha") String captcha,
+                        HttpServletRequest request) {
+        // ===== Validate params =====
         Matcher accountMatcher = accountRegex.matcher(account);
-        Matcher passwordMatcher = passwordRegex.matcher(password);
-        Matcher captchaMatcher = captchaRegex.matcher(captcha);
         if (!accountMatcher.matches())
-            return JsonMsg.failed("message.auth.login.invalid_account");
-        if (!passwordMatcher.matches())
-            return JsonMsg.failed("message.auth.login.invalid_password");
-        if (!captchaMatcher.matches())
-            return JsonMsg.failed("message.auth.login.invalid_captcha");
+            return JsonMsg.failed("message.invalid.account");
 
-        // Call service
-        return authService.login(account, password, httpServletRequest.getSession());
+        Matcher passwordMatcher = passwordRegex.matcher(password);
+        if (!passwordMatcher.matches())
+            return JsonMsg.failed("message.invalid.password");
+
+        Matcher captchaMatcher = captchaRegex.matcher(captcha);
+        if (!captchaMatcher.matches())
+            return JsonMsg.failed("message.invalid.captcha");
+
+        // ===== Call service =====
+        return authService.login(account, password, request.getSession());
     }
 
     // Logout
     @GetMapping("/logout")
-    public String logout() {
-        // Call service
-        return authService.logout(httpServletRequest.getSession());
+    public String logout(HttpServletRequest request) {
+        // ===== Call service =====
+        return authService.logout(request.getSession());
     }
 
     // Info
     @GetMapping("/info")
-    public String info() {
-        // Call service
-        return authService.info(httpServletRequest.getSession());
+    public String info(HttpServletRequest request) {
+        // ===== Call service =====
+        return authService.info(request.getSession());
     }
     // ===== End of Mappings =====
 }

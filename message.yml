@@ -1,0 +1,53 @@
+session:
+  login: bool
+  login_timestamp: long
+  user: com.vmark.backend.entity.User
+  captcha: java.lang.String
+  captcha_timestamp: long
+
+message:
+  auth:
+    - already_login
+    - no_login
+  invalid:
+    - aid
+    - account
+    - password
+    - captcha
+    - uid
+    - new_name
+    - new_password
+    - privilege
+    - iid
+    - page
+    - order_name
+    - order_type
+    - name
+    - parent
+    - cid
+  wrong:
+    - captcha
+    - password
+  timeout:
+    - captcha
+  not_found:
+    attachment:
+      - id
+    category:
+      - all
+    item:
+      - id
+      - keyword
+      - limit
+    user:
+      - id
+      - account
+      - all
+  fail:
+    - login
+    - account_duplicated
+    - permission
+    - delete_user
+    - upload
+    - add_category
+    - update_category

@@ -7,6 +7,9 @@ server:
         same-site: none
         secure: true
 
+web:
+  upload-path: ./vMarkData/
+
 spring:
   servlet:
     multipart:
@@ -16,6 +19,9 @@ spring:
     password: asdfQWER1234####
     url: jdbc:mysql://127.0.0.1:3306/vmark?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/, file:${web.upload-path}
 
 mybatis:
   mapper-locations: classpath:mapping/*.xml

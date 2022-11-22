@@ -13,17 +13,37 @@ import java.util.List;
 @Service
 public class UserService {
     // ===== Log =====
-    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     // ===== End of Log =====
 
 
-    // ===== MyBatis Mappers =====
+    // ===== External Autowired =====
+    private final UserMapper userMapper;
+    // ===== End of External Autowired =====
+
+
+    // ===== Constructor =====
     @Autowired
-    private UserMapper userMapper;
-    // ===== End of MyBatis Mappers =====
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+    // ===== End of Constructor =====
 
 
     // ===== Services =====
+    // Register
+    public String register(String account, String password) {
+        // ===== Update database =====
+        if (userMapper.add(account, password) == 1) {
+            logger.info("Successfully registered: account='{}'", account);
+            return JsonMsg.success();
+        }
+
+        // ===== Account duplicated =====
+        logger.warn("Dumplicated register: account='{}'", account);
+        return JsonMsg.failed("message.fail.account_duplicated");
+    }
+
     // Update info
     public String updateInfo(int uid, String name, String password, int opUid, short opPrivilege) {
         // ===== Success =====
@@ -52,36 +72,41 @@ public class UserService {
 
     // Delete user
     public String delete(int uid) {
-        if (userMapper.deleteById(uid) == 1) {
+        // ===== Success =====
+        if (userMapper.delete(uid) == 1) {
             logger.info("User deleted: uid={}", uid);
             return JsonMsg.success();
         }
-        else {
-            logger.warn("Fail to delete user: uid={}", uid);
-            return JsonMsg.failed("message.user.delete.fail");
-        }
+
+        // ===== Fail =====
+        logger.warn("Fail to delete user: uid={}", uid);
+        return JsonMsg.failed("message.fail.delete_user");
     }
 
     // Find user
     public String findById(int uid) {
-        // Find in database
+        // ===== Find in database =====
         User user = userMapper.findById(uid);
 
-        // Return
-        return user == null ? JsonMsg.failed("message.user.find.id.fail") : JsonMsg.success(user);
+        // ===== Return =====
+        return user == null ?
+                JsonMsg.failed("message.not_found.user.id") : JsonMsg.success(user);
     }
     public String findByAccount(String account) {
-        // Find in database
+        // ===== Find in database =====
         User user = userMapper.findByAccount(account);
 
-        // Return
-        return user == null ? JsonMsg.failed("message.user.find.account.fail") : JsonMsg.success(user);
+        // ===== Return =====
+        return user == null ?
+                JsonMsg.failed("message.not_found.user.account") : JsonMsg.success(user);
     }
-    public String findLimit(int offset, int rows) {
-        // Find in database
-        List<User> user = userMapper.findLimit(offset, rows);
+    public String findAll(Integer offset) {
+        // ===== Find in database =====
+        List<User> user = userMapper.findAll(offset);
 
-        // Return
-        return user == null ? JsonMsg.failed("message.user.find.limit.fail") : JsonMsg.success(user);
+        // ===== Return =====
+        return user == null ?
+                JsonMsg.failed("message.not_found.user.all") : JsonMsg.success(user);
     }
+    // ===== End of Services =====
 }

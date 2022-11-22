@@ -20,95 +20,90 @@ public class AuthService {
     // ===== End of Log =====
 
 
-    // ===== MyBatis Mappers =====
+    // ===== External autowired =====
+    private final UserMapper userMapper;
+    // ===== End of External autowired =====
+
+
+    // ===== Constructor =====
     @Autowired
-    private UserMapper userMapper;
-    // ===== End of MyBatis Mappers =====
+    public AuthService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+    // ===== End of Constructor =====
 
 
     // ===== Services =====
     // Generate captcha
-    public byte[] genCaptcha(HttpSession session, HttpServletResponse response) {
-        // Generate captcha
+    public byte[] genCaptcha(HttpSession session, HttpServletResponse httpServletResponse) {
+        // ===== Generate captcha =====
         byte[] image = CaptchaUtil.generate(session);
         if (image == null) {
             logger.warn("Fail to generate captcha on session {}", session.getId());
-            response.setStatus(500);
+            httpServletResponse.setStatus(500);
             return null;
         }
+
+        // ===== Return image =====
         logger.info(
                 "Successfully generated captcha on session {}: captcha='{}', timestamp={}",
                 session.getId(),
                 session.getAttribute("captcha"),
                 session.getAttribute("captcha_timestamp")
         );
-
-        // Return picture
         return image;
-    }
-
-    // Register
-    public String register(String account, String password) {
-        // Update database
-        if (userMapper.add(account, password, (short)0) == 1) {
-            logger.info("Successfully registered: account='{}'", account);
-            return JsonMsg.success();
-        }
-
-        // Account duplicated
-        logger.warn("Dumplicated register: account='{}'", account);
-        return JsonMsg.failed("message.auth.register.account_duplicated");
     }
 
     // Login
     public String login(String account, String password, HttpSession session) {
-        // Check login
-        LoginStatus status = checkLogin(session);
-        if (status == LoginStatus.PASS) {
+        // ===== Check login =====
+        if (checkLogin(session) == LoginStatus.PASS) {
             logger.warn("Already logined: account='{}'", account);
-            return JsonMsg.failed("message.auth.login.already");
+            return JsonMsg.failed("message.auth.already_login");
         }
 
-        // Find user
+        // ===== Find user =====
         User user = userMapper.findByAccount(account);
         if (user == null) {
             logger.warn("Fail to login: account='{}'", account);
-            return JsonMsg.failed("message.auth.login.fail");
+            return JsonMsg.failed("message.fail.login");
         }
 
-        // Check password
+        // ===== Check password =====
         if (user.getPassword().compareTo(password) != 0) {
             logger.warn("Fail to login: account='{}'", account);
-            return JsonMsg.failed("message.auth.login.fail");
+            return JsonMsg.failed("message.fail.login");
         }
 
-        // ===== Success =====
-        logger.info("Successfully logined: account='{}'", account);
-        // Update session
+        // ===== Update session =====
         session.setAttribute("login", true);
         session.setAttribute("login_timestamp", new Date().getTime());
         session.setAttribute("user", user);
-        // Return user info
+
+        // ===== Return user info =====
+        logger.info("Successfully logined: account='{}'", account);
         return JsonMsg.success(user);
     }
 
     // Logout
     public String logout(HttpSession session) {
-        logger.info("Successfully logout on session '{}'", session.getId());
+        // ===== Update session =====
         session.setAttribute("login", false);
+
+        // ===== Return success =====
+        logger.info("Successfully logout on session '{}'", session.getId());
         return JsonMsg.success();
     }
 
     // Get logined user info
     public String info(HttpSession session) {
-        // Check login
-        LoginStatus status = checkLogin(session);
-        if (status != LoginStatus.PASS) {
+        // ===== Check login =====
+        if (checkLogin(session) != LoginStatus.PASS) {
             logger.warn("Fail to get session info on session '{}'", session.getId());
-            return JsonMsg.failed("message.auth.info.pls_login");
+            return JsonMsg.failed("message.auth.no_login");
         }
 
-        // Return user info
+        // ===== Return user info =====
         logger.info("Successfully get session info on session '{}'", session.getId());
         return JsonMsg.success(session.getAttribute("user"));
     }
@@ -135,5 +130,15 @@ public class AuthService {
 
         // Pass
         return LoginStatus.PASS;
+    }
+
+    // Check privilege
+    public short checkPrivilege(HttpSession session) {
+        // No login
+        if (checkLogin(session) != LoginStatus.PASS)
+            return 0;
+
+        // Logined
+        return ((User)session.getAttribute("user")).getPrivilege();
     }
 }

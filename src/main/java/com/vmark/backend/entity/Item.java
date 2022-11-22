@@ -15,19 +15,27 @@ public class Item {
     @JsonProperty("name")
     private String name;
 
+    // Item category ID
+    @JsonProperty("cid")
+    private int cid;
+
     // Item price
     @JsonProperty("price")
-    private float price;
+    private int price;
+
+    // Item remains
+    @JsonProperty("remain")
+    private int remain;
+
+    // Item showcase attachment ID
+    @JsonProperty("aid")
+    private Integer aid;
 
     // Item sale price
     @JsonProperty("sale")
-    private Float sale;
+    private Integer sale;
 
     // Item description (HTML)
     @JsonProperty("desc")
     private String description;
-
-    // Item remains count
-    @JsonProperty("remain")
-    private int remain;
 }

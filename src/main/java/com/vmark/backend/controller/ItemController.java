@@ -3,12 +3,7 @@ package com.vmark.backend.controller;
 import com.vmark.backend.service.ItemService;
 import com.vmark.backend.utils.JsonMsg;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/item")
@@ -16,62 +11,56 @@ public class ItemController {
     // ===== Services =====
     @Autowired
     private ItemService itemService;
+    // ===== End of Services =====
 
-    // ===== Http Servlet Request =====
-    @Autowired
-    private HttpServletRequest httpServletRequest;
 
     // ===== Mappings =====
     // Get item info by id
     @GetMapping("/info/{siid}")
-    public String getItemInfoById(@PathVariable String siid) {
-        // Parse iid
+    public String getInfoById(@PathVariable String siid) {
+        // ===== Parse iid =====
         int iid;
         try {
             iid = Integer.parseInt(siid);
         }
         catch (NumberFormatException e) {
-            return JsonMsg.failed("item.message.invalid_item");
+            return JsonMsg.failed("message.invalid.iid");
         }
 
-        // Call service
-        return itemService.getItemById(iid);
+        // ===== Validate params =====
+        if (iid < 1)
+            return JsonMsg.failed("message.invalid.iid");
+
+        // ===== Call service =====
+        return itemService.findById(iid);
     }
 
-    // Get item picture by ipid
-    @GetMapping(value = "/pic/{sipid}", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getItemPicByIpid(@PathVariable String sipid) {
-        // Parse ipid
-        int ipid;
-        try {
-            ipid = Integer.parseInt(sipid);
-        }
-        catch (NumberFormatException e) {
-            return null;
+    // Get item info by keyword
+    @GetMapping("/search/{keyword}")
+    public String getInfoByKeyword(@PathVariable String keyword,
+                                       @RequestParam(value = "p", required = false) String spage) {
+        // ===== Parse page =====
+        int page = 1;
+        if (spage != null) {
+            try {
+                page = Integer.parseInt(spage);
+            } catch (NumberFormatException e) {
+                return JsonMsg.failed("message.invalid.page");
+            }
         }
 
-        // Call service
-        return itemService.getItemPicByIpid(ipid);
+        // ===== Validate params =====
+        if (page < 1)
+            return JsonMsg.failed("message.invalid.page");
+
+        // ===== Call service =====
+        return itemService.findByKeyword(keyword.trim(), (page - 1) * 20, 20);
     }
 
-    // Upload item picture
-    @PostMapping("/upload_pic")
-    public String uploadItemPic(@RequestParam("file")MultipartFile file) {
-        // Check empty
-        if (file.isEmpty())
-            return JsonMsg.failed("message.item.upload_pic.empty");
-
-        // Check content type (PNG only)
-        String type = file.getContentType();
-        if (type == null || type.compareTo("image/png") != 0)
-            return JsonMsg.failed("message.item.upload_pic.invalid_type");
-
-        // Call service
-        try {
-            return itemService.storeItmePic(1, file.getBytes());
-        }
-        catch (IOException e) {
-            return JsonMsg.failed("message.item.upload_pic.io_fail");
-        }
+    // Get item by page
+    @GetMapping("/")
+    public String getInfoByPage(@RequestParam(value = "p", required = false) String spage) {
+        return "";
     }
+    // ===== End of Mappings =====
 }

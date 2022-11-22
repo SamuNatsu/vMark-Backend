@@ -3,10 +3,10 @@
 
 <mapper namespace="com.vmark.backend.mapper.UserMapper">
     <!-- Insert -->
-    <insert id="add"><![CDATA[
-        INSERT INTO users(`account`, `password`, privilege)
-        VALUES (#{account}, #{password}, #{privilege})
-    ]]></insert>
+    <insert id="add">
+        INSERT INTO users(`account`, `password`)
+        VALUES (#{account}, #{password})
+    </insert>
 
     <!-- Update -->
     <update id="updateInfo">
@@ -21,32 +21,39 @@
         </set><![CDATA[
         WHERE uid = #{uid} AND (uid = #{opUid} OR privilege < #{opPrivilege})
     ]]></update>
-    <update id="updatePrivilege"><![CDATA[
+    <update id="updatePrivilege">
         UPDATE users
         SET privilege = #{privilege}
         WHERE uid = #{uid}
-    ]]></update>
+    </update>
 
     <!-- Delete -->
-    <delete id="deleteById"><![CDATA[
+    <delete id="delete">
         DELETE FROM users
         WHERE uid = #{uid}
-    ]]></delete>
+    </delete>
 
     <!-- Select -->
-    <select id="findById" resultType="com.vmark.backend.entity.User"><![CDATA[
+    <select id="findById" resultType="com.vmark.backend.entity.User">
         SELECT *
         FROM users
         WHERE uid = #{uid}
-    ]]></select>
-    <select id="findByAccount" resultType="com.vmark.backend.entity.User"><![CDATA[
+    </select>
+    <select id="findByAccount" resultType="com.vmark.backend.entity.User">
         SELECT *
         FROM users
         WHERE `account` = #{uid}
-    ]]></select>
-    <select id="findLimit" resultType="com.vmark.backend.entity.User"><![CDATA[
+    </select>
+    <select id="findAll" resultType="com.vmark.backend.entity.User">
         SELECT *
         FROM users
-        LIMIT #{offset}, #{rows}
-    ]]></select>
+        <choose>
+            <when test="offset != null">
+        LIMIT #{offset}, 20
+            </when>
+            <otherwise>
+        LIMIT 20
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

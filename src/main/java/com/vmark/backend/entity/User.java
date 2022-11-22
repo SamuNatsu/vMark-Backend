@@ -8,18 +8,23 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User {
+    // User ID
     @JsonProperty("uid")
     private int uid;
 
+    // User account
     @JsonProperty("account")
     private String account;
 
+    // User name
     @JsonProperty("name")
     private String name;
 
+    // User password
     @JsonIgnore
     private String password;
 
+    // User privilege
     @JsonProperty("privilege")
     private short privilege;
 }

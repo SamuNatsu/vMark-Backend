@@ -3,32 +3,63 @@
 
 <mapper namespace="com.vmark.backend.mapper.ItemMapper">
     <!-- Inserts -->
-    <insert id="add" parameterType="com.vmark.backend.entity.Item">
-        INSERT INTO items(`name`, price)
-        VALUES (#{name}, #{price});
+    <insert id="add">
+        INSERT INTO items(`name`, cid, price)
+        VALUES (#{name}, #{cid}, #{price})
     </insert>
 
     <!-- Updates -->
-    <update id="update" parameterType="com.vmark.backend.entity.Item">
+    <update id="update">
         UPDATE items
-        SET `name` = #{name}
+        <set>
+            <if test="true">
+                `name` = #{name},
+            </if>
+            <if test="aid != null">
+                picture = #{aid},
+            </if>
+            <if test="true">
+                price = #{price},
+            </if>
+            <if test="sale != null">
+                sale = #{sale},
+            </if>
+            <if test="description != null">
+                `description` = #{description},
+            </if>
+            <if test="true">
+                remain = #{remain},
+            </if>
+        </set>
         WHERE iid = #{iid}
     </update>
 
     <!-- Deletes -->
-    <delete id="deleteById" parameterType="int">
-        DELETE FRoM items WHERE iid = #{iid}
+    <delete id="deleteById">
+        DELETE FROM items
+        WHERE iid = #{iid}
     </delete>
 
     <!-- Selects -->
-    <select id="findById" parameterType="int" resultType="com.vmark.backend.entity.Item">
-        SELECT * FROM items WHERE iid = #{iid}
-    </select>
-    <select id="findByKeyword" parameterType="java.lang.String" resultType="com.vmark.backend.entity.Item">
-        SELECT * FROM items WHERE `name` LIKE #{keyword}
-    </select>
-    <select id="findAlll" resultType="com.vmark.backend.entity.Item">
-        SELECt * FROM items;
+    <select id="findById" resultType="com.vmark.backend.entity.Item">
+        SELECT *
+        FROM items
+        WHERE items.iid = #{iid}
     </select>
 
+    <select id="searchAll" resultType="com.vmark.backend.entity.Item">
+        SELECt items.iid, `name`, `path` AS picture, price, sale, `description`, remain
+        FROM items LEFT JOIN attachments ON items.picture = attachments.aid
+        <if test="keyword != null">
+        WHERE `name` LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <choose>
+            <when test="offset != null">
+        LIMIT #{offset}, 20
+            </when>
+            <otherwise>
+        LIMIT 20
+            </otherwise>
+        </choose>
+    </select>
 </mapper>

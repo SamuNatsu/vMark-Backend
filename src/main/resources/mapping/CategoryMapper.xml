@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vmark.backend.mapper.CategoryMapper">
+    <!-- Inserts -->
+    <insert id="add">
+        INSERT INTO categories(`name`, parent)
+        VALUES(#{name}, #{parent})
+    </insert>
+
+    <!-- Update -->
+    <update id="update">
+        UPDATE categories
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="true">
+                parent = #{parent}
+            </if>
+        </set>
+        WHERE cid = #{cid}
+    </update>
+
+    <!-- Deletes -->
+    <delete id="delete">
+        DELETE FROM categories
+        WHERE cid = #{cid}
+    </delete>
+
+    <!-- Select -->
+    <select id="findAll" resultType="com.vmark.backend.entity.Category">
+        SELECT *
+        FROM categories
+    </select>
+</mapper>

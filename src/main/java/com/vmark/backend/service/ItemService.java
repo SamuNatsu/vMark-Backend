@@ -1,14 +1,14 @@
 package com.vmark.backend.service;
 
 import com.vmark.backend.entity.Item;
-import com.vmark.backend.entity.ItemPic;
 import com.vmark.backend.mapper.ItemMapper;
-import com.vmark.backend.mapper.ItemPicMapper;
 import com.vmark.backend.utils.JsonMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ItemService {
@@ -20,47 +20,42 @@ public class ItemService {
     // ===== Mappers =====
     @Autowired
     private ItemMapper itemMapper;
-    @Autowired
-    private ItemPicMapper itemPicMapper;
     // ===== End of Mappers =====
 
 
-    public String getItemById(int iid) {
-        // Find in database
+    // ===== Services =====
+    // Find item by ID
+    public String findById(int iid) {
+        // ===== Find in database =====
         Item item = itemMapper.findById(iid);
         if (item == null)
-            return JsonMsg.failed("item.message.not_exists");
+            return JsonMsg.failed("message.not_found.item.id");
 
-        // Return
+        // ===== Return =====
         return JsonMsg.success(item);
     }
 
-    public byte[] getItemPicByIpid(int ipid) {
-        logger.info("Request item picture: ipid={}", ipid);
+    // Find item by keyword
+    public String findByKeyword(String keyword, int offset, int rows) {
 
-        // Find in database
-        ItemPic itemPic = itemPicMapper.findByIpid(ipid);
-        if (itemPic == null) {
-            logger.warn("Item picture not found: ipid={}", ipid);
-            return null;
-        }
+        // ===== Find in database =====
+        List<Item> item = itemMapper.findByKeyword(keyword, offset, rows);
+        if (item == null)
+            return JsonMsg.failed("message.not_found.item.keyword");
 
-        // Return
-        return itemPic.getData();
+        // ===== Return =====
+        logger.info("Search: keyword='{}', offset={}, rows={}", keyword, offset, rows);
+        return JsonMsg.success(item);
     }
 
-    public String storeItmePic(int iid, byte[] data) {
-        logger.info("Upload item picture: iid={}", iid);
+    // Find item limit
+    public String findLimit(int offset, int rows) {
+        // ===== Find in database =====
+        List<Item> item = itemMapper.findLimit(offset, rows);
+        if (item == null)
+            return JsonMsg.failed("message.not_found.item.limit");
 
-        // Create object
-        ItemPic itemPic = new ItemPic();
-        itemPic.setIid(iid);
-        itemPic.setData(data);
-
-        // Insert database
-        if (itemPicMapper.add(itemPic) == 1)
-            return JsonMsg.success();
-        else
-            return JsonMsg.failed("message.item.upload_pic.db_fail");
+        // ===== Return =====
+        return JsonMsg.success(item);
     }
 }

@@ -12,6 +12,24 @@ DROP DATABASE IF EXISTS vmark;
 CREATE DATABASE vmark;
 USE vmark;
 
+
+# ===== Attachment table =====
+# Create attachment table
+CREATE TABLE attachments(
+    # Attachment ID
+    aid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+
+    # Attachment name
+    `name` VARCHAR(255) NOT NULL,
+
+    # Attachment path
+    `path` VARCHAR(255) NOT NULL,
+
+    # Attachment timestamp
+    `timestamp` LONG NOT NULL
+);
+
+
 # ===== User table =====
 # Create table
 CREATE TABLE users(
@@ -42,37 +60,63 @@ VALUES (
 # Add test account, password is "test", encrypted as SHA256
 INSERT INTO users(`account`, `password`)
 VALUES (
-           'test',
+           'test_0',
            '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
        );
+
+
+# ===== Category table =====
+# Create category table
+CREATE TABLE categories(
+    # Category ID
+    cid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+
+    # Category name (length <= 10)
+    `name` CHAR(10) NOT NULL,
+
+    # Category parent
+    parent INT
+);
+
+# Add test categories
+INSERT INTO categories(`name`)
+VALUES ('Test');
+
+INSERT INTO categories(`name`, parent)
+VALUES ('Sub Test', 1);
+
 
 # ===== Item table =====
 # Create item table
 CREATE TABLE items(
+    # Item ID
     iid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+
+    # Item name
     `name` VARCHAR(255) NOT NULL,
-    picture INT,
-    price FLOAT NOT NULL,
-    sale FLOAT,
-    `description` MEDIUMTEXT,
-    remain INT NOT NULL DEFAULT 0
+
+    # Item category ID
+    cid INT NOT NULL,
+
+    # Item price (in cents)
+    price INT NOT NULL,
+
+    # Item remains
+    remain INT NOT NULL DEFAULT 0,
+
+    # Item showcase attachment ID
+    aid INT,
+
+    # Item sale price (in cents)
+    sale INT,
+
+    # Item description (HTML)
+    `description` MEDIUMTEXT
 );
+
 # Add test item
-INSERT INTO items(`name`, price)
-VALUES (
-    'Test item',
-    0.00
-);
-
-# ===== Attachment table =====
-
-
-# Create item picture table
-CREATE TABLE item_pics(
-    ipid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    iid INT NOT NULL,
-    `data` MEDIUMBLOB
-);
+INSERT INTO items(`name`, cid, price)
+VALUES ('Test item', 2, 0.00);
 
 # ===== Order table =====
 # Create order table
@@ -86,7 +130,6 @@ CREATE TABLE order_items(
     oid INT NOT NULL,
     iid INT NOT NULL,
     price INT NOT NULL,
-    sale INT NOT NULL,
     `count` INT NOT NULL
 );
 

@@ -6,59 +6,33 @@
     <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
 </head>
 <body>
-    <img id="captcha" src="http://localhost:8080/api/auth/captcha" alt="Captcha"/>
-    <div>
-        <h1>Register</h1>
-        <form action="http://localhost:8080/api/auth/register" method="post" onsubmit="reg()">
-            <label>
-                Account:
-                <input name="account" type="text"/>
-            </label><br/>
-            <label>
-                Password:
-                <input id="reg_b" name="password" type="password"/>
-            </label><br/>
-            <label>
-                Captcha:
-                <input name="captcha" type="text"/>
-            </label>
-            <button type="submit">Submit</button>
-        </form>
-        <script>
-            function reg() {
-                let b = document.querySelector("#reg_b");
-                let t = b.value;
-                t = CryptoJS.SHA256(t).toString();
-                b.value = t;
-            }
-        </script>
-    </div>
-    <hr/>
-    <div>
-        <h1>Login</h1>
-        <form action="http://localhost:8080/api/auth/login" method="post" onsubmit="reg1()">
-            <label>
-                Account:
-                <input name="account" type="text"/>
-            </label><br/>
-            <label>
-                Password:
-                <input id="reg_a" name="password" type="password"/>
-            </label><br/>
-            <label>
-                Captcha:
-                <input name="captcha" type="text"/>
-            </label>
-            <button type="submit">Submit</button>
-        </form>
-        <script>
-            function reg1() {
-                let b = document.querySelector("#reg_a");
-                let t = b.value;
-                t = CryptoJS.SHA256(t).toString();
-                b.value = t;
-            }
-        </script>
-    </div>
+    <img src="http://localhost:8080/api/auth/captcha" alt="Captcha"/><br/>
+    <label for="captcha">Captcha</label><input id="captcha" type="text"/>
+    <button onclick="login()">Login</button>
+    <form action="http://localhost:8080/api/attachment/upload" method="post" enctype="multipart/form-data">
+        <input name="file" type="file"/>
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        function login() {
+            let el = document.querySelector("#captcha");
+            el = el.value;
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = ()=>{
+                if (xhr.readyState === 4) {
+                    if (xhr.status >= 200 && xhr.status < 300)
+                        alert("OK");
+                    else
+                        alert("Fail");
+                }
+            };
+            xhr.open("post", "http://localhost:8080/api/auth/login");
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+            xhr.send("account=super_admin&" +
+                "password=35b1e72c51ac17b1cfc8d79e2b24fd22bd5797e4c8461e7e8561818eec28715d&" +
+                "captcha=" + el);
+        }
+    </script>
 </body>
 </html>
