@@ -40,7 +40,7 @@ public class AttachmentController {
 
     // ===== Mappings =====
     // Delete
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam("aid") int aid,
                          HttpServletRequest request) {
         // ===== Validate params =====
@@ -117,7 +117,7 @@ public class AttachmentController {
     }
 
     // Rename
-    @GetMapping("/rename")
+    @PostMapping("/rename")
     public String rename(@RequestParam("aid") int aid,
                          @RequestParam("new_name") String newName,
                          HttpServletRequest request) {

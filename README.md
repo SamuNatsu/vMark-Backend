@@ -9,9 +9,9 @@ com.vmark.backend.controller.AttachmentController
 #### Method
 > **URL:** `/api/attachment/delete`
 >
-> **Method:** `Get`
+> **Method:** `Post`
 >
-> **Params:** `\<aid>`
+> **Params:** `<aid>`
 >
 > **Description:** Delete attachment
 >
@@ -19,23 +19,23 @@ com.vmark.backend.controller.AttachmentController
 > 
 > **Message:** `message.invalid.aid`, `message.fail.permission`, `message.fail.database`
 
-> URL: /api/attachment/get
+> **URL:** `/api/attachment/get`
 >
-> **Method:** Get (dst: image/png)
+> **Method:** `Get` (dst: image/png)
 >
-> **Params:** \<aid>
+> **Params:** `<aid>`
 >
 > **Description:** Get attachment contents
 >
 > **Permission:** Everyone
 > 
-> **Message:** (Empty)
+> **Message:** (None)
 
-> URL: /api/attachment/info
+> **URL:** `/api/attachment/info`
 >
-> **Method:** Get
+> **Method:** `Get`
 >
-> **Params:** \[aid], \[s], \[p], \[on], \[ot]
+> **Params:** `[aid]`, `[s]`, `[p]`, `[on]`, `[ot]`
 >
 > **Description:** Get attachment infomation
 >
@@ -43,11 +43,11 @@ com.vmark.backend.controller.AttachmentController
 > 
 > **Message:** `message.fail.permission`, `message.invalid.aid`, `message.invalid.page`, `message.invalid.order_name`, `message.invalid.order_type`, `message.fail.database`
 
-> URL: /api/attachment/rename
+> **URL:** `/api/attachment/rename`
 >
-> **Method:** Get
+> **Method:** `Post`
 >
-> **Params:** \<aid>, \<new_name>
+> **Params:** `<aid>`, `<new_name>`
 >
 > **Description:** Rename attachment
 >
@@ -55,11 +55,11 @@ com.vmark.backend.controller.AttachmentController
 > 
 > **Message:** `message.invalid.aid`, `message.invalid.new_name`, `message.fail.permission`, `message.fail.database`
 
-> URL: /api/attachment/upload
+> **URL:** `/api/attachment/upload`
 >
-> **Method:** Post (src: multipart/form-data)
+> **Method:** `Post` (src: multipart/form-data)
 >
-> **Params:** \<file>
+> **Params:** `<file>`
 >
 > **Description:** Upload attachment
 >
@@ -68,12 +68,50 @@ com.vmark.backend.controller.AttachmentController
 > **Message:** `message.fail.permission`, `message.fail.upload`, `message.fail.database`
 
 ### Authorize API
-Controller: com.vmark.backend.controller.AuthController
+#### Controller
+com.vmark.backend.controller.AuthController
 
-| URL               | Method | Params                     | Description                               |
-|:------------------|:-------|:---------------------------|:------------------------------------------|
-| /api/auth/captcha | Get    | (Empty)                    | Generate new captcha for currrent session |
-| /api/auth/login   | Post   | account, password, captcha | User login for current session            |
-| /api/auth/logout  | Get    | (Empty)                    | User logout for current session           |
-| /api/auth/info    | Get    | (Empty)                    | Get current user info                     |
+#### Method
+> **URL:** `/api/auth/captcha`
+> 
+> **Method:** `Get` (dst: image/gif)
+> 
+> **Params:** (None)
+> 
+> **Description:** Generate new captcha for current session
+> 
+> **Permission:** Everyone
+> 
+> **Message:** (None)
 
+> **URL:** `/api/auth/info`
+> 
+> **Method:** `Get`
+> 
+> **Params:** (None)
+> 
+> **Description:** Get current user infomation
+> 
+> **Permission:** Logined
+> 
+> **Message:** `message.auth.no_login`
+
+> **URL:** `/api/auth/login`
+> 
+> **Method:** Post
+> 
+> **Params:** `<account>`, `<password>`, `<captcha>`
+> 
+> **Permission:** Everyone
+> 
+> **Message:** `message.invalid.account`, `message.invalid.password`, `message.invalid.captcha`, `message.auth.already_login`, `message.fail.login`
+
+> **URL:** `/api/auth/logout`
+> 
+> **Method:** Post
+> 
+> **Params:** (None)
+> 
+> **Permission:** Everyone
+> 
+> **Message:** (None)

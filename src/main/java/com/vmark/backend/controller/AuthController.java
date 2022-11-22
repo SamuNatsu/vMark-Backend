@@ -48,6 +48,13 @@ public class AuthController {
         return authService.genCaptcha(request.getSession(), response);
     }
 
+    // Info
+    @GetMapping("/info")
+    public String info(HttpServletRequest request) {
+        // ===== Call service =====
+        return authService.info(request.getSession());
+    }
+
     // Login
     @PostMapping("/login")
     public String login(@RequestParam("account") String account,
@@ -72,17 +79,10 @@ public class AuthController {
     }
 
     // Logout
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
         // ===== Call service =====
         return authService.logout(request.getSession());
-    }
-
-    // Info
-    @GetMapping("/info")
-    public String info(HttpServletRequest request) {
-        // ===== Call service =====
-        return authService.info(request.getSession());
     }
     // ===== End of Mappings =====
 }
