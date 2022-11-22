@@ -100,8 +100,8 @@ public class AttachmentController {
     }
 
     // Get by ID
-    @GetMapping(value = "/get/{aid}", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getById(@PathVariable int aid,
+    @GetMapping(value = "/get", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] getById(@RequestParam("aid") int aid,
                           HttpServletResponse response) {
         // ===== Validate params =====
         if (aid < 1) {
