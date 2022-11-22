@@ -7,69 +7,65 @@ vMark E-commercial System Backend
 com.vmark.backend.controller.AttachmentController
 
 #### Method
-> URL: /api/attachment/delete
+> **URL:** `/api/attachment/delete`
 >
-> Method: Get
+> **Method:** `Get`
 >
-> Params: \<aid>
+> **Params:** `\<aid>`
 >
-> Description: Delete attachment
+> **Description:** Delete attachment
 >
-> Permission: Admin
+> **Permission:** Admin
 > 
-> Message: message.invalid.aid, message.fail.permission, message.fail.database
+> **Message:** `message.invalid.aid`, `message.fail.permission`, `message.fail.database`
 
 > URL: /api/attachment/get
 >
-> Method: Get (dst: image/png)
+> **Method:** Get (dst: image/png)
 >
-> Params: \<aid>
+> **Params:** \<aid>
 >
-> Description: Get attachment contents
+> **Description:** Get attachment contents
 >
-> Permission: Everyone
+> **Permission:** Everyone
 > 
-> Message: (Empty)
+> **Message:** (Empty)
 
 > URL: /api/attachment/info
 >
-> Method: Get
+> **Method:** Get
 >
-> Params: \[aid], \[s], \[p], \[on], \[ot]
+> **Params:** \[aid], \[s], \[p], \[on], \[ot]
 >
-> Description: Get attachment infomation
+> **Description:** Get attachment infomation
 >
-> Permission: Admin
+> **Permission:** Admin
 > 
-> Message: message.fail.permission, message.invalid.aid, message.invalid.page, 
->
->          message.invalid.order_name, message.invalid.order_type, message.fail.database
+> **Message:** `message.fail.permission`, `message.invalid.aid`, `message.invalid.page`, `message.invalid.order_name`, `message.invalid.order_type`, `message.fail.database`
 
 > URL: /api/attachment/rename
 >
-> Method: Get
+> **Method:** Get
 >
-> Params: \<aid>, \<new_name>
+> **Params:** \<aid>, \<new_name>
 >
-> Description: Rename attachment
+> **Description:** Rename attachment
 >
-> Permission: Admin
+> **Permission:** Admin
 > 
-> Message: message.invalid.aid, message.invalid.new_name, message.fail.permission,
-> 
->          message.fail.database
+> **Message:** `message.invalid.aid`, `message.invalid.new_name`, `message.fail.permission`, `message.fail.database`
 
 > URL: /api/attachment/upload
 >
-> Method: Post (src: multipart/form-data)
+> **Method:** Post (src: multipart/form-data)
 >
-> Params: \<file>
+> **Params:** \<file>
 >
-> Description: Upload attachment
+> **Description:** Upload attachment
 >
-> Permission: Admin
+> **Permission:** Admin
 > 
-> Message: message.fail.permission, message.fail.upload, message.fail.database
+> **Message:** `message.fail.permission`, `message.fail.upload`, `message.fail.database`
 
 ### Authorize API
 Controller: com.vmark.backend.controller.AuthController
