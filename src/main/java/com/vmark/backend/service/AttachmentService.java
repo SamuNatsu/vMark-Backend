@@ -82,7 +82,7 @@ public class AttachmentService {
         // ===== Failed =====
         if (result != 1) {
             logger.warn("Failed to add attachment: name='{}', path='{}'", name, path);
-            return JsonMsg.failed("message.fail.add_attachment");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====
@@ -98,7 +98,7 @@ public class AttachmentService {
         // ===== Failed =====
         if (result != 1) {
             logger.warn("Failed to rename attachment: aid={}", aid);
-            return JsonMsg.failed("message.fail.rename_attachment");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====
@@ -113,7 +113,7 @@ public class AttachmentService {
         int result = attachmentMapper.delete(aid);
         if (attachment == null || result != 1) {
             logger.warn("Failed to delete attachment: aid={}", aid);
-            return JsonMsg.failed("mesage.fail.delete_attachment");
+            return JsonMsg.failed("mesage.fail.database");
         }
 
         // ===== Delete local =====
@@ -152,7 +152,7 @@ public class AttachmentService {
         // ===== Failed =====
         if (attachments == null) {
             logger.warn("Failed to find attachments: options={}", options);
-            return JsonMsg.failed("message.not_found.attachment.options");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====

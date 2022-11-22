@@ -39,50 +39,6 @@ public class AttachmentController {
 
 
     // ===== Mappings =====
-    // Upload
-    @PostMapping("/upload")
-    public String upload(@RequestParam("file") MultipartFile file,
-                         HttpServletRequest request) {
-        // ===== Check privilege =====
-        if (authService.checkPrivilege(request.getSession()) < 1)
-            return JsonMsg.failed("message.fail.permission");
-
-        // ===== Convert file name =====
-        String name = file.getOriginalFilename();
-        if (name == null)
-            name = "attachment";
-        name = name.substring(0, name.indexOf('.')).replaceAll("[^\\w_]+", "");
-
-        // ===== Store file =====
-        String path = attachmentService.store(file);
-        if (path == null)
-            return JsonMsg.failed("message.fail.upload");
-
-        // ===== Call service =====
-        return attachmentService.add(name, path);
-    }
-
-    // Rename
-    @GetMapping("/rename")
-    public String rename(@RequestParam("aid") int aid,
-                         @RequestParam("new_name") String newName,
-                         HttpServletRequest request) {
-        // ===== Validate params =====
-        if (aid < 1)
-            return JsonMsg.failed("message.invalid.aid");
-
-        Matcher nameMatcher = nameValidator.matcher(newName);
-        if (!nameMatcher.matches())
-            return JsonMsg.failed("message.invalid.new_name");
-
-        // ===== Check privilege =====
-        if (authService.checkPrivilege(request.getSession()) < 1)
-            return JsonMsg.failed("message.fail.permission");
-
-        // ===== Call service =====
-        return attachmentService.rename(aid, newName);
-    }
-
     // Delete
     @GetMapping("/delete")
     public String delete(@RequestParam("aid") int aid,
@@ -99,10 +55,10 @@ public class AttachmentController {
         return attachmentService.delete(aid);
     }
 
-    // Get by ID
+    // Get contents
     @GetMapping(value = "/get", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] getById(@RequestParam("aid") int aid,
-                          HttpServletResponse response) {
+    public byte[] get(@RequestParam("aid") int aid,
+                      HttpServletResponse response) {
         // ===== Validate params =====
         if (aid < 1) {
             response.setStatus(404);
@@ -114,13 +70,13 @@ public class AttachmentController {
     }
 
     // Get info
-    @GetMapping("/")
-    public String getInfo(@RequestParam(value = "aid", required = false) Integer aid,
-                          @RequestParam(value = "s", required = false) String name,
-                          @RequestParam(value = "p", required = false) Integer page,
-                          @RequestParam(value = "on", required = false) String orderName,
-                          @RequestParam(value = "ot", required = false) String orderType,
-                          HttpServletRequest request) {
+    @GetMapping("/info")
+    public String info(@RequestParam(value = "aid", required = false) Integer aid,
+                       @RequestParam(value = "s", required = false) String name,
+                       @RequestParam(value = "p", required = false) Integer page,
+                       @RequestParam(value = "on", required = false) String orderName,
+                       @RequestParam(value = "ot", required = false) String orderType,
+                       HttpServletRequest request) {
         // ===== Check privilege =====
         if (authService.checkPrivilege(request.getSession()) < 1)
             return JsonMsg.failed("message.fail.permission");
@@ -147,16 +103,61 @@ public class AttachmentController {
         if (orderName != null) {
             if (orderName.compareTo("name") != 0 && orderName.compareTo("timestamp") != 0)
                 return JsonMsg.failed("message.invalid.order_name");
-            if (orderType == null)
-                orderType = "asc";
-            else if (orderType.compareTo("asc") != 0 && orderType.compareTo("desc") != 0)
+
+            String ot = orderType == null ? "asc" : orderType;
+            if (ot.compareTo("asc") != 0 && ot.compareTo("desc") != 0)
                 return JsonMsg.failed("message.invalid.order_type");
+
             options.put("order_name", orderName);
-            options.put("order_type", orderType);
+            options.put("order_type", ot);
         }
 
         // ===== Call service =====
         return attachmentService.findByOptions(options);
+    }
+
+    // Rename
+    @GetMapping("/rename")
+    public String rename(@RequestParam("aid") int aid,
+                         @RequestParam("new_name") String newName,
+                         HttpServletRequest request) {
+        // ===== Validate params =====
+        if (aid < 1)
+            return JsonMsg.failed("message.invalid.aid");
+
+        Matcher nameMatcher = nameValidator.matcher(newName);
+        if (!nameMatcher.matches())
+            return JsonMsg.failed("message.invalid.new_name");
+
+        // ===== Check privilege =====
+        if (authService.checkPrivilege(request.getSession()) < 1)
+            return JsonMsg.failed("message.fail.permission");
+
+        // ===== Call service =====
+        return attachmentService.rename(aid, newName);
+    }
+
+    // Upload
+    @PostMapping("/upload")
+    public String upload(@RequestParam("file") MultipartFile file,
+                         HttpServletRequest request) {
+        // ===== Check privilege =====
+        if (authService.checkPrivilege(request.getSession()) < 1)
+            return JsonMsg.failed("message.fail.permission");
+
+        // ===== Convert file name =====
+        String name = file.getOriginalFilename();
+        if (name == null)
+            name = "attachment";
+        name = name.substring(0, name.indexOf('.')).replaceAll("[^\\w_]+", "");
+
+        // ===== Store file =====
+        String path = attachmentService.store(file);
+        if (path == null)
+            return JsonMsg.failed("message.fail.upload");
+
+        // ===== Call service =====
+        return attachmentService.add(name, path);
     }
     // ===== End of Mappings =====
 }
