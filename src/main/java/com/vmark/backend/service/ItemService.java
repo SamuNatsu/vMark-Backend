@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -18,12 +19,71 @@ public class ItemService {
 
 
     // ===== Mappers =====
-    @Autowired
-    private ItemMapper itemMapper;
+    private final ItemMapper itemMapper;
     // ===== End of Mappers =====
 
 
+    // ===== Constructor =====
+    @Autowired
+    public ItemService(ItemMapper itemMapper) {
+        this.itemMapper = itemMapper;
+    }
+    // ===== End of Constructor =====
+
+
     // ===== Services =====
+    // Add item
+    public String add(String name, int cid, int price) {
+        // ===== Insert into database =====
+        int result = itemMapper.add(name, cid, price);
+
+        // ===== Fail =====
+        if (result != 1) {
+            logger.warn("Fail to add item: name='{}', cid={}, price={}", name, cid, price);
+            return JsonMsg.failed("message.fail.database");
+        }
+
+        // ===== Success =====
+        return JsonMsg.success();
+    }
+
+    // Update item info
+    public String update(int iid,
+                         String name,
+                         Integer cid,
+                         Integer price,
+                         Integer remain,
+                         Integer aid,
+                         Integer sale,
+                         String description) {
+        // ===== Update item =====
+        int result = itemMapper.update(iid, name, cid, price, remain, aid, sale, description);
+
+        // ===== Fail =====
+        if (result != 1) {
+            logger.warn("Fail to update item: iid={}", iid);
+            return JsonMsg.failed("message.fail.database");
+        }
+
+        // ===== Success =====
+        return JsonMsg.success();
+    }
+
+    // Delete item
+    public String delete(int iid) {
+        // ===== Delete from database =====
+        int result = itemMapper.delete(iid);
+
+        // ===== Fail =====
+        if (result != 1) {
+            logger.warn("Fail to delete item: iid={}", iid);
+            return JsonMsg.failed("message.fail.database");
+        }
+
+        // ===== Success =====
+        return JsonMsg.success();
+    }
+
     // Find item by ID
     public String findById(int iid) {
         // ===== Find in database =====
@@ -35,5 +95,15 @@ public class ItemService {
         return JsonMsg.success(item);
     }
 
+    // Find all
+    public String findAll(HashMap<String, Object> options) {
+        // ===== Find in database =====
+        List<Item> items = itemMapper.findAll(options);
+        if (items == null)
+            return JsonMsg.failed("message.fail.database");
 
+        // ===== Return =====
+        return JsonMsg.success(items);
+    }
+    // ===== End of Services =====
 }

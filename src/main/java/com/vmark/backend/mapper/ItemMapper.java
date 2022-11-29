@@ -12,9 +12,9 @@ public interface ItemMapper {
 
     int update(int iid,
                String name,
-               int cid,
-               int price,
-               int remain,
+               Integer cid,
+               Integer price,
+               Integer remain,
                Integer aid,
                Integer sale,
                String description);
@@ -22,5 +22,5 @@ public interface ItemMapper {
     int delete(int iid);
 
     Item findById(int iid);
-    List<Item> searchAll(HashMap<String, Object> options);
+    List<Item> findAll(HashMap<String, Object> options);
 }

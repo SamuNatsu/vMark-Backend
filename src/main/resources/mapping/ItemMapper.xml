@@ -12,16 +12,16 @@
     <update id="update">
         UPDATE items
         <set>
-            <if test="true">
+            <if test="name != null">
                 `name` = #{name},
             </if>
-            <if test="true">
+            <if test="cid != null">
                 cid = #{cid},
             </if>
-            <if test="true">
+            <if test="price != null">
                 price = #{price}
             </if>
-            <if test="true">
+            <if test="remain != null">
                 remain = #{remain},
             </if>
             <if test="aid != null">
@@ -47,9 +47,24 @@
     <select id="findById" resultType="com.vmark.backend.entity.Item">
         SELECT *
         FROM items
-        WHERE items.iid = #{iid}
+        WHERE iid = #{iid}
     </select>
-    <select id="searchAll" resultType="com.vmark.backend.entity.Item">
-
+    <select id="findAll" resultType="com.vmark.backend.entity.Item">
+        SELECT *
+        FROM items
+        <where>
+            <if test="name != null">
+        AND `name` LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="hideSoldOut != null">
+        AND remain != 0
+            </if>
+        </where>
+        <if test="orderName != null">
+        ORDER BY ${orderName} ${orderType}
+        </if>
+        <if test="page != null">
+        LIMIT #{page}, 20
+        </if>
     </select>
 </mapper>

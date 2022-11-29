@@ -39,7 +39,7 @@ public class CategoryService {
         // ===== Fail =====
         if (result != 1) {
             logger.warn("Fail to add category: name='{}', parent={}", name, parent);
-            return JsonMsg.failed("message.fail.add_category");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====
@@ -54,7 +54,7 @@ public class CategoryService {
         // ===== Fail =====
         if (result != 1) {
             logger.warn("Fail to update category: cid={}, name='{}', parent={}", cid, name, parent);
-            return JsonMsg.failed("message.fail.update_category");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====
@@ -69,7 +69,7 @@ public class CategoryService {
         // ===== Fail =====
         if (result != 1) {
             logger.warn("Fail to delete category: cid={}", cid);
-            return JsonMsg.failed("message.fail.delete_category");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====
@@ -84,7 +84,7 @@ public class CategoryService {
         // ===== Fail =====
         if (result == null) {
             logger.warn("Fail to find all categories");
-            return JsonMsg.failed("message.not_found.category.all");
+            return JsonMsg.failed("message.fail.database");
         }
 
         // ===== Success =====

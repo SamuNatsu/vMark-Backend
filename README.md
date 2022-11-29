@@ -98,7 +98,7 @@ com.vmark.backend.controller.AuthController
 
 > **URL:** `/api/auth/login`
 > 
-> **Method:** Post
+> **Method:** `Post`
 > 
 > **Params:** `<account>`, `<password>`, `<captcha>`
 > 
@@ -108,10 +108,55 @@ com.vmark.backend.controller.AuthController
 
 > **URL:** `/api/auth/logout`
 > 
-> **Method:** Post
+> **Method:** `Post`
 > 
 > **Params:** (None)
 > 
 > **Permission:** Everyone
 > 
 > **Message:** (None)
+
+### Category API
+#### Controller
+com.vmark.backend.controller.CategoryController
+
+#### Method
+> **URL:** `/api/category/add`
+> 
+> **Method:** `Post`
+> 
+> **Params:** `<name>`, `[parent]`
+> 
+> **Permission:** Admin
+> 
+> **Message:** `message.invalid.name`, `message.invalid.parent`, `message.fail.permission`, `message.fail.database`
+
+> **URL:** `/api/category/delete`
+> 
+> **Method:** `Post`
+> 
+> **Params:** `<cid>`
+> 
+> **Permission:** Admin
+> 
+> **Message:** `message.invalid.cid`, `message.fail.permission`, `message.fail.database`
+
+> **URL:** `/api/category/get`
+> 
+> **Method:** `Get`
+> 
+> **Params:** (None)
+> 
+> **Permission:** Everyone
+> 
+> **Message:** `message.fail.database`
+
+> **URL:** `/api/category/update`
+> 
+> **Method:** `Post`
+> 
+> **Params:** `<cid>`, `[name]`, `[parent]`
+> 
+> **Permission:** Admin
+> 
+> **Message:** `message.invalid.cid`, `message.invalid.name`, `message.fail.permission`, `message.fail.database`

@@ -4,10 +4,7 @@ import com.vmark.backend.service.AuthService;
 import com.vmark.backend.service.CategoryService;
 import com.vmark.backend.utils.JsonMsg;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
@@ -23,6 +20,7 @@ public class CategoryController {
 
 
     // ===== Validators =====
+    // Category name validator
     private static final Pattern nameValidator = Pattern.compile("^\\w+$");
     // ===== End of Validators =====
 
@@ -39,7 +37,7 @@ public class CategoryController {
 
     // ===== Mappings =====
     // Add
-    @GetMapping("/add")
+    @PostMapping("/add")
     public String add(@RequestParam("name") String name,
                       @RequestParam(value = "parent", required = false) Integer parent,
                       HttpServletRequest request) {
@@ -59,8 +57,30 @@ public class CategoryController {
         return categoryService.add(name, parent);
     }
 
+    // Delete
+    @PostMapping("/delete")
+    public String delete(@RequestParam("cid") int cid,
+                         HttpServletRequest request) {
+        // ===== Validate params =====
+        if (cid < 1)
+            return JsonMsg.failed("message.invalid.cid");
+
+        // ===== Check privilege =====
+        if (authService.checkPrivilege(request.getSession()) < 1)
+            return JsonMsg.failed("message.fail.permission");
+
+        // ===== Call service =====
+        return categoryService.delete(cid);
+    }
+
+    // Get all category info
+    @GetMapping("/get")
+    public String get() {
+        return categoryService.findAll();
+    }
+
     // Update
-    @GetMapping("/update")
+    @PostMapping("/update")
     public String update(@RequestParam("cid") int cid,
                          @RequestParam(value = "name", required = false) String name,
                          @RequestParam(value = "parent", required = false) Integer parent,
@@ -84,28 +104,6 @@ public class CategoryController {
 
         // ===== Call service =====
         return categoryService.update(cid, name, parent);
-    }
-
-    // Delete
-    @GetMapping("/delete")
-    public String delete(@RequestParam("cid") int cid,
-                         HttpServletRequest request) {
-        // ===== Validate params =====
-        if (cid < 1)
-            return JsonMsg.failed("message.invalid.cid");
-
-        // ===== Check privilege =====
-        if (authService.checkPrivilege(request.getSession()) < 1)
-            return JsonMsg.failed("message.fail.permission");
-
-        // ===== Call service =====
-        return categoryService.delete(cid);
-    }
-
-    // Get all category info
-    @GetMapping("/get")
-    public String get() {
-        return categoryService.findAll();
     }
     // ===== End of Mappings =====
 }
