@@ -1,4 +1,3 @@
-HELP.md
 target/
 vMarkData/
 !.mvn/wrapper/maven-wrapper.jar

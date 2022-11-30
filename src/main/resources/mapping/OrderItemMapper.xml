@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vmark.backend.mapper.OrderItemMapper">
+    <!-- Inserts -->
+    <insert id="add">
+        INSERT INTO order_items(oid, iid, price, `count`)
+        VALUES(#{oid}, #{iid}, #{price}, #{count})
+    </insert>
+
+    <!-- Selects -->
+    <select id="findById" resultType="com.vmark.backend.entity.OrderItem">
+        SELECT *
+        FROM order_items
+        WHERE oid = #{oid}
+    </select>
+</mapper>

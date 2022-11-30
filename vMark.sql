@@ -116,21 +116,22 @@ CREATE TABLE items(
 
 # Add test item
 INSERT INTO items(`name`, cid, price)
-VALUES ('Test item', 2, 0.00);
+VALUES ('Test item', 2, 0);
 
 # ===== Order table =====
 # Create order table
 CREATE TABLE orders(
     oid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     uid INT NOT NULL,
-    `timestamp` TIMESTAMP NOT NULL
+    `timestamp` LONG NOT NULL
 );
 # Create order item table
 CREATE TABLE order_items(
     oid INT NOT NULL,
     iid INT NOT NULL,
     price INT NOT NULL,
-    `count` INT NOT NULL
+    `count` INT NOT NULL,
+    PRIMARY KEY (oid, iid)
 );
 
 # ===== Option table =====

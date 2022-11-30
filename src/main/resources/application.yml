@@ -1,3 +1,28 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 1d
+      cookie:
+        same-site: none
+        secure: true
+
+web:
+  upload-path: ./vMarkData/
+
 spring:
-  profiles:
-    active: dev
+  servlet:
+    multipart:
+      max-file-size: 15MB
+  datasource:
+    username: root
+    password: asdfQWER1234####
+    url: jdbc:mysql://127.0.0.1:3306/vmark?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/, file:${web.upload-path}
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+  type-aliases-package: com.vmark.backend.entity

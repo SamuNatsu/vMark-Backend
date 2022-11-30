@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.vmark.backend.mapper.OrderMapper">
+    <!-- Inserts -->
+    <insert id="add">
+        INSERT INTO orders(uid, `timestamp`)
+        VALUES(#{uid}, #{timestamp})
+    </insert>
+
+    <!-- Deletes -->
+    <delete id="delete">
+        DELETE FROM orders
+        WHERE oid = #{oid}
+    </delete>
+
+    <!-- Selects -->
+    <select id="findByOid" resultType="com.vmark.backend.entity.Order"><![CDATA[
+        SELECT *
+        FROM orders
+        WHERE oid = #{oid} AND (uid = #{op_uid} OR #{op_privilege} > 1)
+    ]]></select>
+    <select id="findNew" resultType="com.vmark.backend.entity.Order">
+        SELECT *
+        FROM orders
+        WHERE uid = #{uid}
+        ORDER BY oid DESC
+        LIMIT 1
+    </select>
+    <select id="findByUid" resultType="com.vmark.backend.entity.Order"><![CDATA[
+        SELECT *
+        FROM orders
+        WHERE uid = #{uid} AND (uid = #{op_uid} OR #{op_privilege} > 1)
+        LIMIT ${offset}, 20
+    ]]></select>
+</mapper>
