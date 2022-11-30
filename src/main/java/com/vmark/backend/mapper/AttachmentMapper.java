@@ -10,10 +10,12 @@ import java.util.List;
 public interface AttachmentMapper {
     int add(String name, String path, long timestamp);
 
-    int updateName(int aid, String name);
-
     int delete(int aid);
 
     Attachment findById(int aid);
-    List<Attachment> findAll(HashMap<String, Object> optoins);
+
+    // Options: [name], [order_name, order_type], <offset>
+    List<Attachment> findByOptions(HashMap<String, Object> options);
+
+    int updateName(int aid, String name);
 }

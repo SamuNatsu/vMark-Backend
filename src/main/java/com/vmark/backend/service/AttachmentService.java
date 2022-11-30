@@ -147,7 +147,7 @@ public class AttachmentService {
     // Find attachments by options
     public String findByOptions(HashMap<String, Object> options) {
         // ===== Find in database =====
-        List<Attachment> attachments = attachmentMapper.findAll(options);
+        List<Attachment> attachments = attachmentMapper.findByOptions(options);
 
         // ===== Failed =====
         if (attachments == null) {
