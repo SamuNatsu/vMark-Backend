@@ -44,12 +44,12 @@
     </delete>
 
     <!-- Selects -->
-    <select id="findById" resultType="com.vmark.backend.entity.Item">
+    <select id="findById" resultType="Item">
         SELECT *
         FROM items
         WHERE iid = #{iid}
     </select>
-    <select id="findAll" resultType="com.vmark.backend.entity.Item">
+    <select id="findAll" resultType="Item">
         SELECT *
         FROM items
         <where>

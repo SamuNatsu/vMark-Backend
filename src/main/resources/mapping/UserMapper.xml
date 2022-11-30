@@ -34,17 +34,17 @@
     </delete>
 
     <!-- Select -->
-    <select id="findById" resultType="com.vmark.backend.entity.User">
+    <select id="findById" resultType="User">
         SELECT *
         FROM users
         WHERE uid = #{uid}
     </select>
-    <select id="findByAccount" resultType="com.vmark.backend.entity.User">
+    <select id="findByAccount" resultType="User">
         SELECT *
         FROM users
         WHERE `account` = #{uid}
     </select>
-    <select id="findAll" resultType="com.vmark.backend.entity.User">
+    <select id="findAll" resultType="User">
         SELECT *
         FROM users
         <choose>

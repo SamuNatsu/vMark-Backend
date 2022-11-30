@@ -9,7 +9,7 @@
     </insert>
 
     <!-- Selects -->
-    <select id="findById" resultType="com.vmark.backend.entity.OrderItem">
+    <select id="findById" resultType="OrderItem">
         SELECT *
         FROM order_items
         WHERE oid = #{oid}

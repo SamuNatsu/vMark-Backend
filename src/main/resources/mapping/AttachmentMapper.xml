@@ -22,12 +22,12 @@
     </delete>
 
     <!-- Selects -->
-    <select id="findById" resultType="com.vmark.backend.entity.Attachment">
+    <select id="findById" resultType="Attachment">
         SELECT *
         FROM attachments
         WHERE aid = #{aid}
     </select>
-    <select id="findAll" resultType="com.vmark.backend.entity.Attachment">
+    <select id="findAll" resultType="Attachment">
         SELECT *
         FROM attachments
         <if test="name != null">

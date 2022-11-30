@@ -15,19 +15,19 @@
     </delete>
 
     <!-- Selects -->
-    <select id="findByOid" resultType="com.vmark.backend.entity.Order"><![CDATA[
+    <select id="findByOid" resultType="Order"><![CDATA[
         SELECT *
         FROM orders
         WHERE oid = #{oid} AND (uid = #{op_uid} OR #{op_privilege} > 1)
     ]]></select>
-    <select id="findNew" resultType="com.vmark.backend.entity.Order">
+    <select id="findNew" resultType="Order">
         SELECT *
         FROM orders
         WHERE uid = #{uid}
         ORDER BY oid DESC
         LIMIT 1
     </select>
-    <select id="findByUid" resultType="com.vmark.backend.entity.Order"><![CDATA[
+    <select id="findByUid" resultType="Order"><![CDATA[
         SELECT *
         FROM orders
         WHERE uid = #{uid} AND (uid = #{op_uid} OR #{op_privilege} > 1)

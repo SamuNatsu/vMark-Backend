@@ -29,7 +29,7 @@
     </delete>
 
     <!-- Select -->
-    <select id="findAll" resultType="com.vmark.backend.entity.Category">
+    <select id="findAll" resultType="Category">
         SELECT *
         FROM categories
     </select>
