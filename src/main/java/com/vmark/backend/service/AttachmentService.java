@@ -22,9 +22,9 @@ import java.util.UUID;
 
 @Service
 public class AttachmentService {
-    // ===== Log =====
+    // ===== Logger =====
     private static final Logger logger = LoggerFactory.getLogger(AttachmentService.class);
-    // ===== End of Log =====
+    // ===== End of Logger =====
 
 
     // ===== External Values =====
@@ -33,9 +33,9 @@ public class AttachmentService {
     // ===== End of External Values =====
 
 
-    // ===== External Autowired =====
+    // ===== Mappers =====
     private final AttachmentMapper attachmentMapper;
-    // ===== End of External Autowired =====
+    // ===== End of Mappers =====
 
 
     // ===== Constructor =====
@@ -126,6 +126,11 @@ public class AttachmentService {
         // ===== Success =====
         logger.info("Successfully deleted attachxment: aid={}", aid);
         return JsonMsg.success();
+    }
+
+    // Count attachemnts
+    public String count() {
+        return JsonMsg.success(attachmentMapper.count());
     }
 
     // Find attachment by ID

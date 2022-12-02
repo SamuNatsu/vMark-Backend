@@ -12,14 +12,14 @@ import java.util.List;
 
 @Service
 public class UserService {
-    // ===== Log =====
+    // ===== Logger =====
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
-    // ===== End of Log =====
+    // ===== End of Logger =====
 
 
-    // ===== External Autowired =====
+    // ===== Mapper =====
     private final UserMapper userMapper;
-    // ===== End of External Autowired =====
+    // ===== End of Mapper =====
 
 
     // ===== Constructor =====
@@ -33,20 +33,20 @@ public class UserService {
     // ===== Services =====
     // Register
     public String register(String account, String password) {
-        // ===== Update database =====
+        // ===== Intert into database =====
         if (userMapper.add(account, password) == 1) {
             logger.info("Successfully registered: account='{}'", account);
             return JsonMsg.success();
         }
 
-        // ===== Account duplicated =====
+        // ===== Fail =====
         logger.warn("Dumplicated register: account='{}'", account);
         return JsonMsg.failed("message.fail.account_duplicated");
     }
 
     // Update info
     public String updateInfo(int uid, String name, String password, int opUid, short opPrivilege) {
-        // ===== Success =====
+        // ===== Update database =====
         if (userMapper.updateInfo(uid, name, password, opUid, opPrivilege) == 1) {
             logger.info("Update user info: uid={}", uid);
             return JsonMsg.success();
@@ -59,20 +59,20 @@ public class UserService {
 
     // Update privilege
     public String updatePrivilege(int uid, short privilege) {
-        // ===== Success =====
-        if (userMapper.updatePriviledge(uid, privilege) == 1) {
-            logger.info("Change user privilege: uid={}, privilege={}", uid, privilege);
+        // ===== Update database =====
+        if (userMapper.updatePrivilege(uid, privilege) == 1) {
+            logger.info("Update user privilege: uid={}, privilege={}", uid, privilege);
             return JsonMsg.success();
         }
 
         // ===== Fail =====
-        logger.warn("Fail to change user privilege: uid={}", uid);
+        logger.warn("Fail to update user privilege: uid={}", uid);
         return JsonMsg.failed("message.fail.permission");
     }
 
     // Delete user
     public String delete(int uid) {
-        // ===== Success =====
+        // ===== Delete from database =====
         if (userMapper.delete(uid) == 1) {
             logger.info("User deleted: uid={}", uid);
             return JsonMsg.success();
@@ -81,6 +81,11 @@ public class UserService {
         // ===== Fail =====
         logger.warn("Fail to delete user: uid={}", uid);
         return JsonMsg.failed("message.fail.delete_user");
+    }
+
+    // Count users
+    public String count() {
+        return JsonMsg.success(userMapper.count());
     }
 
     // Find user
@@ -100,13 +105,13 @@ public class UserService {
         return user == null ?
                 JsonMsg.failed("message.not_found.user.account") : JsonMsg.success(user);
     }
-    public String findAll(Integer offset) {
+    public String findAll(int offset) {
         // ===== Find in database =====
         List<User> user = userMapper.findAll(offset);
 
         // ===== Return =====
         return user == null ?
-                JsonMsg.failed("message.not_found.user.all") : JsonMsg.success(user);
+                JsonMsg.failed("message.fail.database") : JsonMsg.success(user);
     }
     // ===== End of Services =====
 }

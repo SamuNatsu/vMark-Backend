@@ -12,14 +12,14 @@ import java.util.List;
 
 @Service
 public class CategoryService {
-    // ===== Log =====
+    // ===== Logger =====
     private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
-    // ===== End of Log =====
+    // ===== End of Logger =====
 
 
-    // ===== External Autowired =====
+    // ===== Mapper =====
     private final CategoryMapper categoryMapper;
-    // ===== End od External Autowired =====
+    // ===== End of Mapper =====
 
 
     // ===== Constructor =====
@@ -34,46 +34,40 @@ public class CategoryService {
     // Add category
     public String add(String name, Integer parent) {
         // ===== Insert into database =====
-        int result = categoryMapper.add(name, parent);
-
-        // ===== Fail =====
-        if (result != 1) {
-            logger.warn("Fail to add category: name='{}', parent={}", name, parent);
-            return JsonMsg.failed("message.fail.database");
+        if (categoryMapper.add(name, parent) == 1) {
+            logger.info("Category added: name'{}', parent={}", name, parent);
+            return JsonMsg.success();
         }
 
-        // ===== Success =====
-        return JsonMsg.success();
+        // ===== Fail =====
+        logger.warn("Fail to add category: name='{}', parent={}", name, parent);
+        return JsonMsg.failed("message.fail.database");
     }
 
     // Update category info
     public String update(int cid, String name, Integer parent) {
         // ===== Update database =====
-        int result = categoryMapper.update(cid, name, parent);
-
-        // ===== Fail =====
-        if (result != 1) {
-            logger.warn("Fail to update category: cid={}, name='{}', parent={}", cid, name, parent);
-            return JsonMsg.failed("message.fail.database");
+        if (categoryMapper.update(cid, name, parent) == 1) {
+            logger.info("Category updated: cid={}, name='{}', parent={}", cid, name, parent);
+            return JsonMsg.success();
         }
 
-        // ===== Success =====
-        return JsonMsg.success();
+        // ===== Fail =====
+        logger.warn("Fail to update category: cid={}, name='{}', parent={}", cid, name, parent);
+        return JsonMsg.failed("message.fail.database");
     }
 
     // Delete category
     public String delete(int cid) {
         // ===== Delete from database =====
-        int result = categoryMapper.delete(cid);
-
-        // ===== Fail =====
-        if (result != 1) {
-            logger.warn("Fail to delete category: cid={}", cid);
-            return JsonMsg.failed("message.fail.database");
+        if (categoryMapper.delete(cid) == 1) {
+            logger.info("Category deleted: cid={}", cid);
+            return JsonMsg.success();
         }
 
-        // ===== Success =====
-        return JsonMsg.success();
+        // ===== Fail =====
+        logger.warn("Fail to delete category: cid={}", cid);
+        return JsonMsg.failed("message.fail.database");
     }
 
     // Get all category
@@ -81,14 +75,8 @@ public class CategoryService {
         // ===== Select from database =====
         List<Category> result = categoryMapper.findAll();
 
-        // ===== Fail =====
-        if (result == null) {
-            logger.warn("Fail to find all categories");
-            return JsonMsg.failed("message.fail.database");
-        }
-
-        // ===== Success =====
-        return JsonMsg.success(result);
+        return result == null ?
+                JsonMsg.failed("message.fail.database") : JsonMsg.success(result);
     }
     // ===== End of Services =====
 }

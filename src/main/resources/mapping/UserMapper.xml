@@ -2,13 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.vmark.backend.mapper.UserMapper">
-    <!-- Insert -->
     <insert id="add">
         INSERT INTO users(`account`, `password`)
         VALUES (#{account}, #{password})
     </insert>
 
-    <!-- Update -->
     <update id="updateInfo">
         UPDATE users
         <set>
@@ -27,13 +25,16 @@
         WHERE uid = #{uid}
     </update>
 
-    <!-- Delete -->
     <delete id="delete">
         DELETE FROM users
         WHERE uid = #{uid}
     </delete>
 
-    <!-- Select -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+    </select>
+
     <select id="findById" resultType="User">
         SELECT *
         FROM users
@@ -47,13 +48,7 @@
     <select id="findAll" resultType="User">
         SELECT *
         FROM users
-        <choose>
-            <when test="offset != null">
+        ORDER BY privilege DESC, uid
         LIMIT #{offset}, 20
-            </when>
-            <otherwise>
-        LIMIT 20
-            </otherwise>
-        </choose>
     </select>
 </mapper>

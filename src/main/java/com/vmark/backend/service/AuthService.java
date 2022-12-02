@@ -15,14 +15,14 @@ import java.util.Date;
 
 @Service
 public class AuthService {
-    // ===== Log =====
+    // ===== Logger =====
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
-    // ===== End of Log =====
+    // ===== End of Logger =====
 
 
-    // ===== External autowired =====
+    // ===== Mappers =====
     private final UserMapper userMapper;
-    // ===== End of External autowired =====
+    // ===== End of Mappers =====
 
 
     // ===== Constructor =====

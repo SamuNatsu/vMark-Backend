@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/option")
 public class OptionController {

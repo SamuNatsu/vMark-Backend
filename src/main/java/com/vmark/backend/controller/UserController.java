@@ -9,27 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    // ===== External Autowired =====
+    // ===== Services =====
     private final AuthService authService;
     private final UserService userService;
-    // ===== End of External Autowired =====
+    // ===== End of Services =====
 
     // ===== Validators =====
     // Account validator (6 <= length <= 30, composed of alphas, digits and underlines)
-    private static final Pattern accountRegex = Pattern.compile("^[0-9a-zA-Z_]{6,30}$");
+    private static final Pattern accountPattern = Pattern.compile("^[0-9a-zA-Z_]{6,30}$");
 
-    // Password validator (SHA 256 string, lowercase)
-    private static final Pattern passwordRegex = Pattern.compile("^[0-9a-z]{64}$");
+    // Password validator (SHA-256 string in lowercase)
+    private static final Pattern passwordPattern = Pattern.compile("^[0-9a-z]{64}$");
 
-    // Captcha validator (length = 4, composed of alphas and digits)
-    private static final Pattern captchaRegex = Pattern.compile("^[0-9A-Z]{4}$");
+    // Captcha validator (length = 4, composed of uppercase alphas and digits)
+    private static final Pattern captchaPattern = Pattern.compile("^[0-9A-Z]{4}$");
     // ===== End of Validators =====
 
 
@@ -44,42 +44,41 @@ public class UserController {
 
 
     // ===== Mappings =====
-    // Register
+    // Register user (Everyone)
     @PostMapping("/register")
     public String register(@RequestParam("account") String account,
                            @RequestParam("password") String password,
                            @RequestParam("captcha") String captcha,
                            HttpServletRequest request) {
         // ===== Validate params =====
-        Matcher accountMatcher = accountRegex.matcher(account);
+        Matcher accountMatcher = accountPattern.matcher(account);
         if (!accountMatcher.matches())
             return JsonMsg.failed("message.invalid.account");
 
-        Matcher passwordMatcher = passwordRegex.matcher(password);
+        Matcher passwordMatcher = passwordPattern.matcher(password);
         if (!passwordMatcher.matches())
             return JsonMsg.failed("message.invalid.password");
 
-        Matcher captchaMatcher = captchaRegex.matcher(captcha);
+        Matcher captchaMatcher = captchaPattern.matcher(captcha);
         if (!captchaMatcher.matches())
             return JsonMsg.failed("message.invalid.captcha");
 
         // ===== Check captcha =====
         CaptchaUtil.CheckStatus checkStatus = CaptchaUtil.check(captcha, request.getSession());
         if (checkStatus == CaptchaUtil.CheckStatus.WRONG)
-            return JsonMsg.failed("message.wrong.captcha");
+            return JsonMsg.failed("message.captcha.wrong");
         if (checkStatus == CaptchaUtil.CheckStatus.TIMEOUT)
-            return JsonMsg.failed("message.timeout.captcha");
+            return JsonMsg.failed("message.captcha.timeout");
 
         // ===== Call service =====
         return userService.register(account, password);
     }
 
     // Update user info (Self or admin, privilege greater)
-    @PostMapping("/update_info")
+    @PostMapping("/update/info")
     public String updateInfo(@RequestParam("uid") int uid,
                              @RequestParam(value = "new_name", required = false) String newName,
                              @RequestParam(value = "new_password", required = false) String newPassword,
-                             @RequestParam("password") String password,
                              HttpServletRequest request) {
         // ===== Validate params =====
         if (uid < 1)
@@ -87,35 +86,30 @@ public class UserController {
 
         if (newName != null) {
             newName = newName.trim();
-            if (newName.isEmpty() || newName.length() > 30)
+            if (newName.length() < 6 || newName.length() > 30)
                 return JsonMsg.failed("message.invalid.new_name");
         }
 
         if (newPassword != null) {
-            Matcher passwordMatcher = passwordRegex.matcher(newPassword);
+            Matcher passwordMatcher = passwordPattern.matcher(newPassword);
             if (!passwordMatcher.matches())
                 return JsonMsg.failed("message.invalid.new_password");
         }
 
-        Matcher passwordMatcher = passwordRegex.matcher(password);
-        if (!passwordMatcher.matches())
-            return JsonMsg.failed("message.invalid.password");
+        if (newName == null && newPassword == null)
+            return JsonMsg.success();
 
         // ===== Check login =====
         if (authService.checkLogin(request.getSession()) != AuthService.LoginStatus.PASS)
             return JsonMsg.failed("message.auth.no_login");
 
-        // ===== Check password =====
-        User user = (User)request.getSession().getAttribute("user");
-        if (password.compareTo(user.getPassword()) != 0)
-            return JsonMsg.failed("message.wrong.password");
-
         // ===== Call service =====
+        User user = (User)request.getSession().getAttribute("user");
         return userService.updateInfo(uid, newName, newPassword, user.getUid(), user.getPrivilege());
     }
 
     // Update user privilege (Super admin ONLY)
-    @GetMapping("/update_privilege")
+    @PostMapping("/update/privilege")
     public String updatePrivilege(@RequestParam("uid") int uid,
                                   @RequestParam("privilege") short privilege,
                                   HttpServletRequest request) {
@@ -150,12 +144,23 @@ public class UserController {
         return userService.delete(uid);
     }
 
+    // Get user count (Admin ONLY)
+    @GetMapping("/count")
+    public String count(HttpServletRequest request) {
+        // ===== Check privilege =====
+        if (authService.checkPrivilege(request.getSession()) < 1)
+            return JsonMsg.failed("message.fail.permission");
+
+        // ===== Call service =====
+        return userService.count();
+    }
+
     // Find user (Admin ONLY)
-    @GetMapping("/get")
+    @GetMapping("/")
     public String get(@RequestParam(value = "uid", required = false) Integer uid,
                       @RequestParam(value = "account", required = false) String account,
-                      HttpServletRequest request,
-                      HttpServletResponse response) {
+                      @RequestParam(value = "p", required = false) Integer page,
+                      HttpServletRequest request) {
         // ===== Check privilege =====
         if (authService.checkPrivilege(request.getSession()) < 1)
             return JsonMsg.failed("message.fail.permission");
@@ -169,34 +174,17 @@ public class UserController {
 
         // ===== Find by account =====
         if (account != null) {
-            Matcher accountMatcher = accountRegex.matcher(account);
+            Matcher accountMatcher = accountPattern.matcher(account);
             if (!accountMatcher.matches())
                 return JsonMsg.failed("message.invalid.account");
             return userService.findByAccount(account);
         }
 
-        // ===== No param ====
-        response.setStatus(500);
-        return null;
-    }
-
-    // Find user limit (Admin ONLY)
-    @GetMapping("/all")
-    public String all(@RequestParam(value = "p", required = false) Integer page,
-                      HttpServletRequest request) {
-        // ===== Validate params =====
+        // ===== Find all =====
         if (page != null && page < 1)
             return JsonMsg.failed("message.invalid.page");
-
-        // ===== Check privilege =====
-        if (authService.checkPrivilege(request.getSession()) < 1)
-            return JsonMsg.failed("message.fail.permission");
-
-        // ===== Call service =====
-        if (page != null)
-            page = (page - 1) * 20;
+        page = (page == null ? 0 : (page - 1) * 20);
         return userService.findAll(page);
     }
-
     // ===== End of Mappings =====
 }

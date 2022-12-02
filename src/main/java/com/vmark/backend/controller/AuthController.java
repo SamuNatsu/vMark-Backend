@@ -11,23 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    // ===== External Autowired =====
+    // ===== Services =====
     private final AuthService authService;
-    // ===== End of External Autowired =====
+    // ===== End of Services =====
 
 
     // ===== Validators =====
     // Account validator (6 <= length <= 30, composed of alphas, digits and underlines)
-    private static final Pattern accountRegex = Pattern.compile("^[0-9a-zA-Z_]{6,30}$");
+    private static final Pattern accountPattern = Pattern.compile("^[0-9a-zA-Z_]{6,30}$");
 
-    // Password validator (SHA 256 string, lowercase)
-    private static final Pattern passwordRegex = Pattern.compile("^[0-9a-z]{64}$");
+    // Password validator (SHA-256 string in lowercase)
+    private static final Pattern passwordPattern = Pattern.compile("^[0-9a-z]{64}$");
 
-    // Captcha validator (length = 4, composed of alphas and digits)
-    private static final Pattern captchaRegex = Pattern.compile("^[0-9A-Z]{4}$");
+    // Captcha validator (length = 4, composed of uppercase alphas and digits)
+    private static final Pattern captchaPattern = Pattern.compile("^[0-9A-Z]{4}$");
     // ===== End of Validators =====
 
 
@@ -40,7 +41,7 @@ public class AuthController {
 
 
     // ===== Mappings =====
-    // Captcha
+    // Get captcha
     @GetMapping(value = "/captcha", produces = MediaType.IMAGE_GIF_VALUE)
     public byte[] captcha(HttpServletRequest request,
                           HttpServletResponse response) {
@@ -62,15 +63,15 @@ public class AuthController {
                         @RequestParam("captcha") String captcha,
                         HttpServletRequest request) {
         // ===== Validate params =====
-        Matcher accountMatcher = accountRegex.matcher(account);
+        Matcher accountMatcher = accountPattern.matcher(account);
         if (!accountMatcher.matches())
             return JsonMsg.failed("message.invalid.account");
 
-        Matcher passwordMatcher = passwordRegex.matcher(password);
+        Matcher passwordMatcher = passwordPattern.matcher(password);
         if (!passwordMatcher.matches())
             return JsonMsg.failed("message.invalid.password");
 
-        Matcher captchaMatcher = captchaRegex.matcher(captcha);
+        Matcher captchaMatcher = captchaPattern.matcher(captcha);
         if (!captchaMatcher.matches())
             return JsonMsg.failed("message.invalid.captcha");
 

@@ -12,6 +12,11 @@
         WHERE aid = #{aid}
     </delete>
 
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM attachments
+    </select>
+
     <select id="findById" resultType="Attachment">
         SELECT *
         FROM attachments

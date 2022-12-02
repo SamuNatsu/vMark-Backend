@@ -12,6 +12,8 @@ public interface AttachmentMapper {
 
     int delete(int aid);
 
+    int count();
+
     Attachment findById(int aid);
 
     // Options: [name], [order_name, order_type], <offset>

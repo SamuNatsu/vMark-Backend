@@ -10,11 +10,13 @@ public interface UserMapper {
     int add(String account, String password);
 
     int updateInfo(int uid, String name, String password, int opUid, short opPrivilege);
-    int updatePriviledge(int uid, short privilege);
+    int updatePrivilege(int uid, short privilege);
 
     int delete(int uid);
 
+    int count();
+
     User findById(int uid);
     User findByAccount(String account);
-    List<User> findAll(Integer offset);
+    List<User> findAll(int offset);
 }
