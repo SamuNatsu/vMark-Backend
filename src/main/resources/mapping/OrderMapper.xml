@@ -2,19 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.vmark.backend.mapper.OrderMapper">
-    <!-- Inserts -->
     <insert id="add">
         INSERT INTO orders(uid, `timestamp`)
         VALUES(#{uid}, #{timestamp})
     </insert>
 
-    <!-- Deletes -->
     <delete id="delete">
         DELETE FROM orders
         WHERE oid = #{oid}
     </delete>
 
-    <!-- Selects -->
+    <select id="count" resultType="int"><![CDATA[
+        SELECT COUNT(*)
+        FROM orders
+        WHERE uid = #{uid} AND (uid = #{op_uid} OR #{op_privilege} > 1)
+    ]]></select>
+
     <select id="findByOid" resultType="Order"><![CDATA[
         SELECT *
         FROM orders

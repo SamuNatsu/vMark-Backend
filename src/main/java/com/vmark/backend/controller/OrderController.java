@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
-    // ===== External Autowired =====
+    // ===== Services =====
     private final AuthService authService;
     private final OrderService orderService;
-    // ===== End of External Autowired =====
+    // ===== End of Services =====
 
 
     // ===== Contructor =====
@@ -32,7 +32,7 @@ public class OrderController {
 
 
     // ===== Mappings =====
-    // Add order
+    // Add order (Self)
     @PostMapping("/add")
     public String add(@RequestParam("uid") int uid,
                       @RequestParam("order") String order,
@@ -54,9 +54,29 @@ public class OrderController {
         // ===== Check login =====
         if (authService.checkLogin(request.getSession()) != AuthService.LoginStatus.PASS)
             return JsonMsg.failed("message.auth.no_login");
+        User user = (User)request.getSession().getAttribute("user");
+        if (user.getUid() != uid)
+            return JsonMsg.failed("messsage.auth.no_login");
 
         // ===== Call service =====
         return orderService.addOrder(uid, orderItems);
+    }
+
+    // Count order (Self or Admin)
+    @GetMapping("/count")
+    public String count(@RequestParam("uid") int uid,
+                        HttpServletRequest request) {
+        // ===== Validate params =====
+        if (uid < 1)
+            return JsonMsg.failed("message.invalid.uid");
+
+        // ====== Check login =====
+        if (authService.checkLogin(request.getSession()) != AuthService.LoginStatus.PASS)
+            return JsonMsg.failed("message.auth.no_login");
+
+        // ===== Call service =====
+        User op = (User)request.getSession().getAttribute("user");
+        return orderService.count(uid, op.getUid(), op.getPrivilege());
     }
 
     // Get order
@@ -91,6 +111,5 @@ public class OrderController {
         User op = (User)request.getSession().getAttribute("user");
         return orderService.findOrderByUid(uid, page == null ? 0 : (page - 1) * 20, op.getUid(), op.getPrivilege());
     }
-
     // ===== End of Mappings =====
 }

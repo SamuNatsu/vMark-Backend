@@ -14,9 +14,9 @@ import java.io.Serializable;
 
 @Service
 public class OptionService {
-    // ===== Log =====
+    // ===== Logger =====
     private static final Logger logger = LoggerFactory.getLogger(OptionService.class);
-    // ===== End of Log =====
+    // ===== End of Logger =====
 
 
     // ===== Mappers =====

@@ -13,10 +13,10 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/api/item")
 public class ItemController {
-    // ===== External Autowired =====
+    // ===== Services =====
     private final AuthService authService;
     private final ItemService itemService;
-    // ===== End of External Autowired =====
+    // ===== End of Services =====
 
 
     // ===== Contructor =====
@@ -30,7 +30,7 @@ public class ItemController {
 
 
     // ===== Mappings =====
-    // Add item
+    // Add item (Admin ONLY)
     @PostMapping("/add")
     public String add(@RequestParam("name") String name,
                       @RequestParam("cid") int cid,
@@ -51,7 +51,7 @@ public class ItemController {
         return itemService.add(name, cid, price);
     }
 
-    // Delete item
+    // Delete item (Admin ONLY)
     @PostMapping("/delete")
     public String delete(@RequestParam("iid") int iid,
                          HttpServletRequest request) {
@@ -67,7 +67,7 @@ public class ItemController {
         return itemService.delete(iid);
     }
 
-    // Update item
+    // Update item (Admin ONLY)
     @PostMapping("/update")
     public String update(@RequestParam("iid") int iid,
                          @RequestParam(value = "name", required = false) String name,
@@ -90,7 +90,13 @@ public class ItemController {
         return itemService.update(iid, name, cid, price, remain, aid, sale, description);
     }
 
-    // Get item info by options
+    // Count items (Everyone)
+    @GetMapping("/count")
+    public String count() {
+        return itemService.count();
+    }
+
+    // Get item info by options (Everyone)
     @GetMapping("/")
     public String get(@RequestParam(value = "iid", required = false) Integer iid,
                       @RequestParam(value = "s", required = false) String name,
@@ -124,8 +130,10 @@ public class ItemController {
             if (page < 1)
                 return JsonMsg.failed("message.invalid.page");
 
-            options.put("page", (page - 1) * 20);
+            options.put("offset", (page - 1) * 20);
         }
+        else
+            options.put("offset", 0);
 
         if (orderName != null) {
 

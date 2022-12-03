@@ -21,6 +21,8 @@ public interface ItemMapper {
 
     int delete(int iid);
 
+    int count();
+
     Item findById(int iid);
     List<Item> findAll(HashMap<String, Object> options);
 }

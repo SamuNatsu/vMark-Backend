@@ -13,9 +13,9 @@ import java.util.List;
 
 @Service
 public class ItemService {
-    // ===== Log =====
+    // ===== Logger =====
     private static final Logger logger = LoggerFactory.getLogger(ItemService.class);
-    // ===== End of Log =====
+    // ===== End of Logger =====
 
 
     // ===== Mappers =====
@@ -82,6 +82,11 @@ public class ItemService {
 
         // ===== Success =====
         return JsonMsg.success();
+    }
+
+    // Count item
+    public String count() {
+        return JsonMsg.success(itemMapper.count());
     }
 
     // Find item by ID

@@ -2,13 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.vmark.backend.mapper.ItemMapper">
-    <!-- Inserts -->
     <insert id="add">
         INSERT INTO items(`name`, cid, price)
         VALUES (#{name}, #{cid}, #{price})
     </insert>
 
-    <!-- Updates -->
     <update id="update">
         UPDATE items
         <set>
@@ -37,13 +35,16 @@
         WHERE iid = #{iid}
     </update>
 
-    <!-- Deletes -->
     <delete id="delete">
         DELETE FROM items
         WHERE iid = #{iid}
     </delete>
 
-    <!-- Selects -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*)
+        FROM items
+    </select>
+
     <select id="findById" resultType="Item">
         SELECT *
         FROM items
@@ -63,8 +64,6 @@
         <if test="orderName != null">
         ORDER BY ${orderName} ${orderType}
         </if>
-        <if test="page != null">
-        LIMIT #{page}, 20
-        </if>
+        LIMIT #{offset}, 20
     </select>
 </mapper>

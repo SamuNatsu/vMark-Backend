@@ -56,6 +56,11 @@ public class OrderService {
         return JsonMsg.success(noder);
     }
 
+    // Count
+    public String count(int uid, int op_uid, short op_privilege) {
+        return JsonMsg.success(orderMapper.count(uid, op_uid, op_privilege));
+    }
+
     // Find by oid
     public String findByOid(int oid, int op_uid, short op_privilege) {
         // ===== Select from database =====
