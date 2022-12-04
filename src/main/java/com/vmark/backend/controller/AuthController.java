@@ -1,6 +1,7 @@
 package com.vmark.backend.controller;
 
 import com.vmark.backend.service.AuthService;
+import com.vmark.backend.utils.CaptchaUtil;
 import com.vmark.backend.utils.JsonMsg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -74,6 +75,13 @@ public class AuthController {
         Matcher captchaMatcher = captchaPattern.matcher(captcha);
         if (!captchaMatcher.matches())
             return JsonMsg.failed("message.invalid.captcha");
+
+        // ===== Check captcha =====
+        CaptchaUtil.CheckStatus status = CaptchaUtil.check(captcha, request.getSession());
+        if (status == CaptchaUtil.CheckStatus.TIMEOUT)
+            return JsonMsg.failed("message.captcha.timeout");
+        if (status == CaptchaUtil.CheckStatus.WRONG)
+            return JsonMsg.failed("message.captcha.wrong");
 
         // ===== Call service =====
         return authService.login(account, password, request.getSession());

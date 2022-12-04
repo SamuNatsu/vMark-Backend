@@ -103,12 +103,7 @@ public class ItemController {
                       @RequestParam(value = "h", required = false) Integer hide,
                       @RequestParam(value = "p", required = false) Integer page,
                       @RequestParam(value = "on", required = false) String orderName,
-                      @RequestParam(value = "ot", required = false) String orderType,
-                      HttpServletRequest request) {
-        // ===== Check privilege =====
-        if (authService.checkPrivilege(request.getSession()) < 1)
-            return JsonMsg.failed("message.fail.permission");
-
+                      @RequestParam(value = "ot", required = false) String orderType) {
         // ===== If request iid =====
         if (iid != null) {
             if (iid < 1)

@@ -129,7 +129,7 @@ public class UserController {
     }
 
     // Delete user (Admin ONLY)
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam("uid") int uid,
                          HttpServletRequest request) {
         // ===== Validate params =====
