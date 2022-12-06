@@ -52,6 +52,5 @@
         WHERE (`account` LIKE CONCAT('%', #{keyword}, '%')) OR (`name` LIKE CONCAT('%', #{keyword}, '%'))
         </if>
         ORDER BY privilege DESC, uid
-        LIMIT #{offset}, 20
     </select>
 </mapper>

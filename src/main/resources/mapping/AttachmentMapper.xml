@@ -31,7 +31,6 @@
         <if test="order_name != null">
         ORDER BY ${order_name} ${order_type}
         </if>
-        LIMIT #{offset}, 20
     </select>
 
     <update id="updateName">

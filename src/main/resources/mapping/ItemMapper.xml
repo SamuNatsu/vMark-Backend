@@ -60,10 +60,12 @@
             <if test="hideSoldOut != null">
         AND remain != 0
             </if>
+            <if test="cid != null">
+        AND cid = #{cid}
+            </if>
         </where>
         <if test="orderName != null">
         ORDER BY ${orderName} ${orderType}
         </if>
-        LIMIT #{offset}, 20
     </select>
 </mapper>

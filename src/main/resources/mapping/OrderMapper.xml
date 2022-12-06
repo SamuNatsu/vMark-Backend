@@ -28,12 +28,10 @@
         FROM orders
         WHERE uid = #{uid}
         ORDER BY oid DESC
-        LIMIT 1
     </select>
     <select id="findByUid" resultType="Order"><![CDATA[
         SELECT *
         FROM orders
         WHERE uid = #{uid} AND (uid = #{op_uid} OR #{op_privilege} > 1)
-        LIMIT ${offset}, 20
     ]]></select>
 </mapper>

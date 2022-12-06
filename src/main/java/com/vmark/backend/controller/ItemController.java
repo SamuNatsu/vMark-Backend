@@ -100,6 +100,7 @@ public class ItemController {
     @GetMapping("/")
     public String get(@RequestParam(value = "iid", required = false) Integer iid,
                       @RequestParam(value = "s", required = false) String name,
+                      @RequestParam(value = "cid", required = false) Integer cid,
                       @RequestParam(value = "h", required = false) Integer hide,
                       @RequestParam(value = "p", required = false) Integer page,
                       @RequestParam(value = "on", required = false) String orderName,
@@ -117,6 +118,9 @@ public class ItemController {
 
         if (name != null)
             options.put("name", name);
+
+        if (cid != null)
+            options.put("cid", cid);
 
         if (hide != null && hide > 0)
             options.put("hideSoldOut", true);
