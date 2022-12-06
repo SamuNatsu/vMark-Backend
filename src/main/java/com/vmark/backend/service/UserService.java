@@ -33,15 +33,18 @@ public class UserService {
     // ===== Services =====
     // Register
     public String register(String account, String password) {
-        // ===== Intert into database =====
-        if (userMapper.add(account, password) == 1) {
-            logger.info("Successfully registered: account='{}'", account);
-            return JsonMsg.success();
+        try {
+            // ===== Intert into database =====
+            if (userMapper.add(account, password) == 1) {
+                logger.info("Successfully registered: account='{}'", account);
+                return JsonMsg.success();
+            }
+        } catch (Exception e) {
+            // ===== Fail =====
+            logger.warn("Dumplicated register: account='{}'", account);
+            return JsonMsg.failed("message.fail.account_duplicated");
         }
-
-        // ===== Fail =====
-        logger.warn("Dumplicated register: account='{}'", account);
-        return JsonMsg.failed("message.fail.account_duplicated");
+        return JsonMsg.success();
     }
 
     // Update info
@@ -97,17 +100,9 @@ public class UserService {
         return user == null ?
                 JsonMsg.failed("message.not_found.user.id") : JsonMsg.success(user);
     }
-    public String findByAccount(String account) {
+    public String findAll(String keyword, int offset) {
         // ===== Find in database =====
-        User user = userMapper.findByAccount(account);
-
-        // ===== Return =====
-        return user == null ?
-                JsonMsg.failed("message.not_found.user.account") : JsonMsg.success(user);
-    }
-    public String findAll(int offset) {
-        // ===== Find in database =====
-        List<User> user = userMapper.findAll(offset);
+        List<User> user = userMapper.findAll(keyword, offset);
 
         // ===== Return =====
         return user == null ?

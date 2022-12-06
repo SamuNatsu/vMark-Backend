@@ -115,8 +115,8 @@ CREATE TABLE items(
 );
 
 # Add test item
-INSERT INTO items(`name`, cid, price)
-VALUES ('Test item', 2, 0);
+INSERT INTO items(`name`, cid, price, sale, `description`)
+VALUES ('Test item', 2, 0, 0, 'Test item description');
 
 # ===== Order table =====
 # Create order table

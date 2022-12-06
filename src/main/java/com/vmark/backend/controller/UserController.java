@@ -158,7 +158,7 @@ public class UserController {
     // Find user (Admin ONLY)
     @GetMapping("/")
     public String get(@RequestParam(value = "uid", required = false) Integer uid,
-                      @RequestParam(value = "account", required = false) String account,
+                      @RequestParam(value = "s", required = false) String keyword,
                       @RequestParam(value = "p", required = false) Integer page,
                       HttpServletRequest request) {
         // ===== Check privilege =====
@@ -172,19 +172,11 @@ public class UserController {
             return userService.findById(uid);
         }
 
-        // ===== Find by account =====
-        if (account != null) {
-            Matcher accountMatcher = accountPattern.matcher(account);
-            if (!accountMatcher.matches())
-                return JsonMsg.failed("message.invalid.account");
-            return userService.findByAccount(account);
-        }
-
         // ===== Find all =====
         if (page != null && page < 1)
             return JsonMsg.failed("message.invalid.page");
         page = (page == null ? 0 : (page - 1) * 20);
-        return userService.findAll(page);
+        return userService.findAll(keyword, page);
     }
     // ===== End of Mappings =====
 }

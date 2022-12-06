@@ -82,14 +82,14 @@ public class AttachmentController {
         return attachmentService.count();
     }
 
-    // Get info (Admin ONLY)
+    // Get info (Admin ONLY) [on = name/timestamp, ot = asc/desc]
     @GetMapping("/")
-    public String get(@RequestParam(value = "aid", required = false) Integer aid,
-                      @RequestParam(value = "s", required = false) String name,
-                      @RequestParam(value = "p", required = false) Integer page,
-                      @RequestParam(value = "on", required = false) String orderName,
-                      @RequestParam(value = "ot", required = false) String orderType,
-                      HttpServletRequest request) {
+    public String getInfo(@RequestParam(value = "aid", required = false) Integer aid,
+                          @RequestParam(value = "s", required = false) String name,
+                          @RequestParam(value = "p", required = false) Integer page,
+                          @RequestParam(value = "on", required = false) String orderName,
+                          @RequestParam(value = "ot", required = false) String orderType,
+                          HttpServletRequest request) {
         // ===== Check privilege =====
         if (authService.checkPrivilege(request.getSession()) < 1)
             return JsonMsg.failed("message.fail.permission");

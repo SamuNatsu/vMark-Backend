@@ -106,7 +106,7 @@ public class CategoryController {
 
     // Get all category info (Everyone)
     @GetMapping("/")
-    public String get() {
+    public String getAll() {
         return categoryService.findAll();
     }
     // ===== End of Mappings =====

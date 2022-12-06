@@ -18,5 +18,5 @@ public interface UserMapper {
 
     User findById(int uid);
     User findByAccount(String account);
-    List<User> findAll(int offset);
+    List<User> findAll(String keyword, int offset);
 }

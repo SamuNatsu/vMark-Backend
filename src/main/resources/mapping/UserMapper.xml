@@ -48,6 +48,9 @@
     <select id="findAll" resultType="User">
         SELECT *
         FROM users
+        <if test="keyword != null">
+        WHERE (`account` LIKE CONCAT('%', #{keyword}, '%')) OR (`name` LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
         ORDER BY privilege DESC, uid
         LIMIT #{offset}, 20
     </select>
