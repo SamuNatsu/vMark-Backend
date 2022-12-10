@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class UserController {

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/attachment")
 public class AttachmentController {

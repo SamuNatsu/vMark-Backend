@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/option")
 public class OptionController {
