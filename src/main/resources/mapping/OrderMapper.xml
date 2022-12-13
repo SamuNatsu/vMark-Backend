@@ -28,6 +28,7 @@
         FROM orders
         WHERE uid = #{uid}
         ORDER BY oid DESC
+        LIMIT 1
     </select>
     <select id="findByUid" resultType="Order"><![CDATA[
         SELECT *
