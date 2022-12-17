@@ -17,18 +17,18 @@
                 cid = #{cid},
             </if>
             <if test="price != null">
-                price = #{price}
+                price = #{price},
             </if>
             <if test="remain != null">
                 remain = #{remain},
             </if>
-            <if test="aid != null">
+            <if test="1 == 1">
                 aid = #{aid},
             </if>
-            <if test="sale != null">
+            <if test="1 == 1">
                 sale = #{sale},
             </if>
-            <if test="description != null">
+            <if test="1 == 1">
                 `description` = #{description},
             </if>
         </set>
