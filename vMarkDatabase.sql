@@ -115,15 +115,16 @@ CREATE TABLE items(
 );
 
 # Add test item
-INSERT INTO items(`name`, cid, price, sale, `description`)
-VALUES ('Test item', 2, 0, 0, 'Test item description');
+INSERT INTO items(`name`, cid, price, remain, sale, `description`)
+VALUES ('Test item', 2, 0, 100, 0, 'Test item description');
 
 # ===== Order table =====
 # Create order table
 CREATE TABLE orders(
     oid INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     uid INT NOT NULL,
-    `timestamp` LONG NOT NULL
+    `timestamp` LONG NOT NULL,
+    address TEXT NOT NULL
 );
 # Create order item table
 CREATE TABLE order_items(

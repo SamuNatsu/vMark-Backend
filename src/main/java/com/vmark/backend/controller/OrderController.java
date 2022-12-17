@@ -35,6 +35,7 @@ public class OrderController {
     @PostMapping("/add")
     public String add(@RequestParam("uid") int uid,
                       @RequestParam("order") String order,
+                      @RequestParam("address") String address,
                       HttpServletRequest request) {
         // ===== Parse order =====
         OrderItem[] orderItems;
@@ -58,7 +59,7 @@ public class OrderController {
             return JsonMsg.failed("messsage.auth.no_login");
 
         // ===== Call service =====
-        return orderService.addOrder(uid, orderItems);
+        return orderService.addOrder(uid, orderItems, address);
     }
 
     // Count order (Self or Admin)

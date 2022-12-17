@@ -7,7 +7,7 @@ import java.util.List;
 
 @Repository
 public interface OrderMapper {
-    int add(int uid, long timestamp);
+    int add(int uid, long timestamp, String address);
 
     int count(int uid, int op_uid, short op_privilege);
 

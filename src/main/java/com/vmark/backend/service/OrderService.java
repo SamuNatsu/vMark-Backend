@@ -1,7 +1,9 @@
 package com.vmark.backend.service;
 
+import com.vmark.backend.entity.Item;
 import com.vmark.backend.entity.Order;
 import com.vmark.backend.entity.OrderItem;
+import com.vmark.backend.mapper.ItemMapper;
 import com.vmark.backend.mapper.OrderItemMapper;
 import com.vmark.backend.mapper.OrderMapper;
 import com.vmark.backend.utils.JsonMsg;
@@ -21,6 +23,7 @@ public class OrderService {
 
 
     // ===== Mappers =====
+    private final ItemMapper itemMapper;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
     // ===== End of Mappers =====
@@ -28,8 +31,10 @@ public class OrderService {
 
     // ===== Constructor =====
     @Autowired
-    public OrderService(OrderMapper orderMapper,
+    public OrderService(ItemMapper itemMapper,
+                        OrderMapper orderMapper,
                         OrderItemMapper orderItemMapper) {
+        this.itemMapper = itemMapper;
         this.orderMapper = orderMapper;
         this.orderItemMapper = orderItemMapper;
     }
@@ -38,9 +43,38 @@ public class OrderService {
 
     // ===== Services =====
     // Add order
-    public String addOrder(int uid, OrderItem[] orderItems) {
+    public String addOrder(int uid, OrderItem[] orderItems, String address) {
+        // ===== Check remains =====
+        int cnt = 0;
+        for (OrderItem i : orderItems) {
+            Item item = itemMapper.findById(i.getIid());
+            if (item == null || item.getRemain() < i.getCount()) {
+                for (int j = 0; j < cnt; ++j) {
+                    item = itemMapper.findById(orderItems[j].getIid());
+                    itemMapper.update(orderItems[j].getIid(),
+                            null,
+                            null,
+                            null,
+                            item.getRemain() + orderItems[j].getCount(),
+                            null,
+                            null,
+                            null);
+                }
+                return JsonMsg.failed("message.fail.remain");
+            }
+            itemMapper.update(i.getIid(),
+                    null,
+                    null,
+                    null,
+                    item.getRemain() - i.getCount(),
+                    null,
+                    null,
+                    null);
+            ++cnt;
+        }
+
         // ===== Insert into database =====
-        int result = orderMapper.add(uid, new Date().getTime());
+        int result = orderMapper.add(uid, new Date().getTime(), address);
 
         // ===== Fail =====
         if (result != 1) {

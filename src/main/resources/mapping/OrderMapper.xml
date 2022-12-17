@@ -3,8 +3,8 @@
 
 <mapper namespace="com.vmark.backend.mapper.OrderMapper">
     <insert id="add">
-        INSERT INTO orders(uid, `timestamp`)
-        VALUES(#{uid}, #{timestamp})
+        INSERT INTO orders(uid, `timestamp`, address)
+        VALUES(#{uid}, #{timestamp}, #{address})
     </insert>
 
     <delete id="delete">

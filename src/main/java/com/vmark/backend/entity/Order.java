@@ -15,4 +15,7 @@ public class Order {
 
     @JsonProperty("timestamp")
     private long timestamp;
+
+    @JsonProperty("address")
+    private String address;
 }
