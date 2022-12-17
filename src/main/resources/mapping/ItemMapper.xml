@@ -23,7 +23,7 @@
                 remain = #{remain},
             </if>
             <if test="aid != null">
-                picture = #{aid},
+                aid = #{aid},
             </if>
             <if test="sale != null">
                 sale = #{sale},
